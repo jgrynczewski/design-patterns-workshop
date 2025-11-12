@@ -30,7 +30,6 @@ jobs:
         run: |
           cd 0_intro/01_hello
           pytest -v --tb=short
-        continue-on-error: true
 
   lab-02-solid-srp:
     name: "Lab 02 - SOLID: SRP (10 pts)"
@@ -54,7 +53,6 @@ jobs:
         run: |
           cd 1_principles/01_solid/01_srp
           pytest -v --tb=short
-        continue-on-error: true
 
   lab-03-grasp-expert:
     name: "Lab 03 - GRASP: Expert (10 pts)"
@@ -78,7 +76,6 @@ jobs:
         run: |
           cd 1_principles/02_grasp/01_information_expert
           pytest -v --tb=short
-        continue-on-error: true
 
   # Summary job - pokazuje ogólny status
   summary:
