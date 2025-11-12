@@ -5,6 +5,8 @@ Testy dla Intro - Simple Calculator
 import pytest
 from starter import add, multiply
 
+pytestmark = pytest.mark.intro_hello
+
 
 class TestCalculator:
     """Testy prostego kalkulatora"""

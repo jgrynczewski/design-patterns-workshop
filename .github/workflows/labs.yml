@@ -1,0 +1,99 @@
+name: Design Patterns Labs
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:  # Pozwala na ręczne uruchomienie
+
+jobs:
+  lab-01-intro-hello:
+    name: "Lab 01 - Intro: Calculator (10 pts)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Lab 01 tests
+        run: |
+          cd 0_intro/01_hello
+          pytest -v --tb=short
+        continue-on-error: true
+
+  lab-02-solid-srp:
+    name: "Lab 02 - SOLID: SRP (10 pts)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Lab 02 tests
+        run: |
+          cd 1_principles/01_solid/01_srp
+          pytest -v --tb=short
+        continue-on-error: true
+
+  lab-03-grasp-expert:
+    name: "Lab 03 - GRASP: Expert (10 pts)"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Lab 03 tests
+        run: |
+          cd 1_principles/02_grasp/01_information_expert
+          pytest -v --tb=short
+        continue-on-error: true
+
+  # Summary job - pokazuje ogólny status
+  summary:
+    name: "Summary"
+    runs-on: ubuntu-latest
+    needs: [lab-01-intro-hello, lab-02-solid-srp, lab-03-grasp-expert]
+    if: always()
+
+    steps:
+      - name: Check results
+        run: |
+          echo "============================================"
+          echo "Design Patterns Workshop - Test Summary"
+          echo "============================================"
+          echo "Lab 01 - Intro Calculator: ${{ needs.lab-01-intro-hello.result }}"
+          echo "Lab 02 - SOLID SRP: ${{ needs.lab-02-solid-srp.result }}"
+          echo "Lab 03 - GRASP Expert: ${{ needs.lab-03-grasp-expert.result }}"
+          echo "============================================"
