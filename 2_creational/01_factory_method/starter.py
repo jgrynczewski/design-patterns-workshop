@@ -49,93 +49,86 @@ Każda klasa postaci (Warrior, Mage, Archer) tworzy swoją unikalną broń.
 from abc import ABC, abstractmethod
 
 
-# %% STEP 1: Product Interface (Weapon)
+# %% STEP 1: Product Interface (Weapon) - GOTOWE
 
 class Weapon(ABC):
-    """Interfejs produktu - broń"""
+    """Interfejs broni - używaj tego w swoim rozwiązaniu"""
 
     @abstractmethod
     def get_name(self) -> str:
-        """Zwraca nazwę broni"""
         pass
 
     @abstractmethod
     def get_damage(self) -> int:
-        """Zwraca obrażenia broni"""
         pass
 
 
-# %% STEP 2: Concrete Products (Sword, Staff, Bow)
+# %% STEP 2: Concrete Products (Sword, Staff, Bow) - GOTOWE
 
-# TODO: Zaimplementuj klasę Sword
-# Hint: Dziedziczy po Weapon
-# Hint: get_name() zwraca "Sword"
-# Hint: get_damage() zwraca 50
+class Sword(Weapon):
+    """Miecz - broń wojownika"""
 
-class Sword:
-    pass
+    def get_name(self) -> str:
+        return "Sword"
 
-
-# TODO: Zaimplementuj klasę Staff
-# Hint: get_name() zwraca "Staff"
-# Hint: get_damage() zwraca 30
-
-class Staff:
-    pass
+    def get_damage(self) -> int:
+        return 50
 
 
-# TODO: Zaimplementuj klasę Bow
-# Hint: get_name() zwraca "Bow"
-# Hint: get_damage() zwraca 40
+class Staff(Weapon):
+    """Laska - broń maga"""
 
-class Bow:
-    pass
+    def get_name(self) -> str:
+        return "Staff"
+
+    def get_damage(self) -> int:
+        return 30
+
+
+class Bow(Weapon):
+    """Łuk - broń łucznika"""
+
+    def get_name(self) -> str:
+        return "Bow"
+
+    def get_damage(self) -> int:
+        return 40
 
 
 # %% STEP 3: Creator (Character) - zawiera Factory Method
 
-class Character(ABC):
-    """Klasa Creator - zawiera factory method"""
+# TODO: Zaimplementuj klasę Character (ABC)
+# Konstruktor przyjmuje name: str
+# Abstrakcyjna metoda create_weapon() -> Weapon (FACTORY METHOD)
+# Metoda attack() -> str:
+#   - Wywołuje self.create_weapon() aby stworzyć broń
+#   - Zwraca: "{name} attacks with {weapon_name} for {damage} damage!"
 
-    def __init__(self, name: str):
-        self.name = name
-
-    @abstractmethod
-    def create_weapon(self) -> Weapon:
-        """
-        FACTORY METHOD - abstrakcyjna metoda
-        Każda podklasa nadpisze tę metodę i stworzy swoją broń
-        """
-        pass
-
-    def attack(self) -> str:
-        """
-        Metoda używa factory method do stworzenia broni
-        To jest klucz - Creator nie wie, jaka broń zostanie stworzona!
-        """
-        weapon = self.create_weapon()  # Wywołanie factory method
-        return f"{self.name} attacks with {weapon.get_name()} for {weapon.get_damage()} damage!"
+class Character:
+    pass
 
 
 # %% STEP 4: Concrete Creators (Warrior, Mage, Archer)
 
 # TODO: Zaimplementuj klasę Warrior
-# Hint: Dziedziczy po Character
-# Hint: Nadpisz create_weapon() - zwróć Sword()
+# Dziedziczy po Character
+# Nadpisz create_weapon() - zwraca Sword()
 
 class Warrior:
     pass
 
 
 # TODO: Zaimplementuj klasę Mage
-# Hint: Nadpisz create_weapon() - zwróć Staff()
+# Dziedziczy po Character
+# Nadpisz create_weapon() - zwraca Staff()
 
 class Mage:
     pass
 
 
 # TODO: Zaimplementuj klasę Archer
-# Hint: Nadpisz create_weapon() - zwróć Bow()
+# Dziedziczy po Character
+# Nadpisz create_weapon() - zwraca Bow()
 
 class Archer:
     pass
