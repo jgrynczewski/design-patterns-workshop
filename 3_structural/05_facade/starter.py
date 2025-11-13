@@ -32,6 +32,9 @@ True
 """
 
 
+# %% Subsystems - GOTOWE
+# WZORZEC: Subsystem (podsystem ukryty za Facade)
+
 class Light:
     """Podsystem - oświetlenie"""
 
@@ -72,59 +75,21 @@ class TV:
         return "TV turned OFF"
 
 
-# TODO: Zaimplementuj SmartHomeFacade
-# Hint: Facade upraszcza interakcję z wieloma podsystemami
-# Hint: evening_mode() - zapala światło (50%), termostat (22°C), TV ON
-# Hint: leaving_home() - gasi światło, TV, uzbr Security
+# %% Facade - DO IMPLEMENTACJI
+# WZORZEC: Facade (fasada upraszczająca interfejs do podsystemów)
+
+# TODO: Zaimplementuj klasę SmartHomeFacade
+# Konstruktor:
+#   - Tworzy instancje wszystkich podsystemów (Light, Thermostat, SecuritySystem, TV)
+#   - Przechowuje je jako atrybuty (self.light, self.thermostat, self.security, self.tv)
+#
+# Metoda evening_mode() -> str:
+#   - Wywołuje: light.dim(50), thermostat.set_temperature(22), security.disarm(), tv.turn_on()
+#   - Zwraca połączone wyniki oddzielone znakiem nowej linii (\n)
+#
+# Metoda leaving_home() -> str:
+#   - Wywołuje: light.turn_off(), thermostat.set_temperature(18), security.arm(), tv.turn_off()
+#   - Zwraca połączone wyniki oddzielone znakiem nowej linii (\n)
 
 class SmartHomeFacade:
-    """
-    FACADE - upraszcza sterowanie inteligentnym domem
-
-    Zamiast klient wywołujący 5+ metod dla każdej akcji,
-    fasada wystawia 2 proste metody
-    """
-
-    def __init__(self):
-        """
-        TODO: Stwórz instancje podsystemów
-        - self.light = Light()
-        - self.thermostat = Thermostat()
-        - self.security = SecuritySystem()
-        - self.tv = TV()
-        """
-        pass
-
-    def evening_mode(self) -> str:
-        """
-        Tryb wieczorny
-
-        TODO: Wywołaj metody podsystemów:
-        - light.dim(50)
-        - thermostat.set_temperature(22)
-        - security.disarm()
-        - tv.turn_on()
-
-        Zwróć połączone wyniki (każdy w nowej linii)
-        """
-        pass
-
-    def leaving_home(self) -> str:
-        """
-        Wychodzenie z domu
-
-        TODO: Wywołaj metody podsystemów:
-        - light.turn_off()
-        - thermostat.set_temperature(18)
-        - security.arm()
-        - tv.turn_off()
-
-        Zwróć połączone wyniki (każdy w nowej linii)
-        """
-        pass
-
-
-# Facade Pattern:
-# Upraszcza interfejs do złożonego podsystemu
-# Klient nie musi znać szczegółów Light, Thermostat, Security, TV
-# Klient używa tylko evening_mode() i leaving_home()
+    pass

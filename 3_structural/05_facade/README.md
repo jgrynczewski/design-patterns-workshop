@@ -1,55 +1,79 @@
 # 🏠 Facade - SmartHome System
 
-**Difficulty**: easy
-**Time**: 10 minutes
-**Focus**: Facade pattern - simplifying complex subsystems
+**Poziom**: łatwy
+**Cel**: Facade - uproszczenie interfejsu do złożonych podsystemów
 
 ## 🎯 Zadanie
-Zaimplementuj `SmartHomeFacade` - upraszcza sterowanie wieloma urządzeniami.
+Zaimplementuj wzorzec Facade dla systemu inteligentnego domu. `SmartHomeFacade` upraszcza sterowanie wieloma urządzeniami poprzez wystawienie prostych metod wysokiego poziomu.
 
 ## 📋 Wymagania
-- [ ] `SmartHomeFacade.__init__()` - tworzy Light, Thermostat, Security, TV
-- [ ] `evening_mode()` - dim(50), temp(22), disarm, TV on
-- [ ] `leaving_home()` - light off, temp(18), arm, TV off
+- [ ] Przechodzą doctesty
+- [ ] Przechodzą testy jednostkowe (pytest)
+- [ ] `SmartHomeFacade` tworzy wszystkie podsystemy w konstruktorze
+- [ ] Metoda `evening_mode()` koordynuje wszystkie podsystemy
+- [ ] Metoda `leaving_home()` koordynuje wszystkie podsystemy
 
 ## 🚀 Jak zacząć
-```bash
-cd day2_structural/05_facade
-pytest test_facade.py -v
-```
+1. Otwórz `starter.py`
+2. Uruchom testy (powinny failować):
+   - Doctests: `python -m doctest starter.py -v`
+   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+3. Podsystemy (`Light`, `Thermostat`, `SecuritySystem`, `TV`) są już gotowe
+4. Zaimplementuj klasę `SmartHomeFacade`:
+   - Konstruktor tworzy instancje wszystkich podsystemów
+   - Metoda `evening_mode()` - wywołuje odpowiednie metody podsystemów
+   - Metoda `leaving_home()` - wywołuje odpowiednie metody podsystemów
+5. Uruchom testy ponownie (teraz powinny przejść)
+6. Gdy wszystkie testy przechodzą:
+   ```bash
+   git add .
+   git commit -m "Complete Facade pattern"
+   git push
+   ```
+7. Sprawdź wynik w GitHub Actions
 
 ## 💡 Facade w pigułce
 
-**Upraszcza interfejs do złożonego podsystemu**
+**Facade deleguje pracę do wielu podsystemów i upraszcza interfejs**
 
-❌ **Źle** (klient zna wszystkie podsystemy):
+### Jak to działa:
+1. Facade tworzy instancje wszystkich podsystemów w konstruktorze
+2. Klient wywołuje jedną metodę Facade (np. `evening_mode()`)
+3. Facade koordynuje wywołania do wielu podsystemów w odpowiedniej kolejności
+
+### Kluczowy moment:
 ```python
-# Klient wywołuje 4 klasy ❌
+def evening_mode(self) -> str:
+    # Facade wywołuje wiele podsystemów
+    result1 = self.light.dim(50)
+    result2 = self.thermostat.set_temperature(22)
+    # ... itd
+```
+
+Klient nie musi znać `Light`, `Thermostat`, `SecuritySystem`, `TV` - tylko `SmartHomeFacade`.
+
+---
+
+### ❌ Bez wzorca:
+```python
+# Klient zarządza wszystkim
 light = Light()
 thermostat = Thermostat()
 security = SecuritySystem()
 tv = TV()
 
-# Klient musi pamiętać sekwencję ❌
+# Musi pamiętać sekwencję
 light.dim(50)
 thermostat.set_temperature(22)
 security.disarm()
 tv.turn_on()
 ```
 
-✅ **Dobrze** (Facade ukrywa złożoność):
+### ✅ Z wzorcem (Facade):
 ```python
-home = SmartHomeFacade()  # Jedna klasa ✅
-home.evening_mode()       # Jedna metoda ✅
-
-# Facade wywoła wszystkie 4 podsystemy w odpowiedniej kolejności
+home = SmartHomeFacade()
+home.evening_mode()
+# Facade zarządza wszystkim wewnętrznie
 ```
 
-**Korzyść**: Klient nie zna Light/Thermostat/Security/TV - tylko Facade.
-
-**Kiedy stosować**:
-- Uproszczenie złożonego API
-- Ukrycie legacy code
-- Jeden punkt wejścia do wielu systemów
-
-Sprawdź `solution_facade.py` po wykonaniu.
+**Korzyść**: Klient wywołuje jedną metodę zamiast czterech, bez znajomości implementacji podsystemów.
