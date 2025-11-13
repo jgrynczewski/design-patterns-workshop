@@ -1,75 +1,100 @@
-# 🎯 Singleton Pattern - RPG Management
+# 🎯 Singleton - Config Manager
 
-**Difficulty**: easy → advanced \
-**Time**: 12-25 minutes \
-**Focus**: Singleton pattern (basic → thread-safe)
+**Poziom**: łatwy
+**Cel**: Singleton - jedna globalna instancja
 
 ## 🎯 Zadanie
-Implementuj wzorzec Singleton w dwóch wersjach - od prostej do zaawansowanej.
+Zaimplementuj wzorzec Singleton dla systemu zarządzania konfiguracją gry. `ConfigManager` musi gwarantować że istnieje tylko jedna instancja w całej aplikacji, aby wszystkie moduły współdzieliły ten sam stan.
 
-## 📊 Poziom 1: Config Manager (easy - 12 min)
-**Plik**: `starter_basic.py`
+## 📋 Wymagania
+- [ ] Przechodzą doctesty
+- [ ] Przechodzą testy jednostkowe (pytest)
+- [ ] `ConfigManager` gwarantuje jedną instancję
+- [ ] Metoda `__new__` kontroluje tworzenie instancji
+- [ ] Współdzielony stan między wszystkimi "instancjami"
+- [ ] Metody: `set_config`, `get_config`, `has_config`, `get_all_configs`, `reset_configs`
 
-### Wymagania:
-- [ ] `ConfigManager` jako basic Singleton
-- [ ] Zarządzanie ustawieniami gry (theme, difficulty, language)
-- [ ] Metody: set_config, get_config, has_config
-- [ ] Shared state między instancjami
-- [ ] Bez threading complexity
+## 🚀 Jak zacząć
+1. Przejrzyj `problem.py` - zobacz problem z wieloma instancjami
+   ```bash
+   python problem.py
+   ```
+2. Otwórz `starter.py`
+3. Uruchom testy (powinny failować):
+   - Doctests: `python -m doctest starter.py -v`
+   - Pytest: `pytest test_basic.py -v`
+4. Zaimplementuj wzorzec Singleton w `ConfigManager`:
+   - Zmienna klasowa `_instance` przechowuje jedyną instancję
+   - Metoda `__new__` kontroluje tworzenie - zwraca `_instance` jeśli istnieje
+   - Metoda `__init__` i metody zarządzania są już zaimplementowane (GOTOWE)
+5. Uruchom testy ponownie (teraz powinny przejść)
+6. Gdy wszystkie testy przechodzą:
+   ```bash
+   git add .
+   git commit -m "Complete Singleton pattern"
+   git push
+   ```
+7. Sprawdź wynik w GitHub Actions
 
-### Jak zacząć:
-1. Otwórz `starter_basic.py`
-2. Uruchom doctests: `python -m doctest starter_basic.py -v`
-3. Uruchom testy: `python -m pytest test_basic.py -v`
+## 💡 Singleton w pigułce
 
- ## ⭐ Poziom 2: Game Manager (advanced - 25 min)
- **Plik**: `starter_advanced.py`
+**Singleton gwarantuje że klasa ma tylko JEDNĄ instancję**
 
- ### Wymagania:
-- [ ] `GameManager` jako thread-safe Singleton
-- [ ] Zarządzanie graczami i stanem gry
-- [ ] Thread safety z `threading.Lock()`
-- [ ] Metody: add_player, remove_player, get_player_count
-- [ ] Production-ready implementation
+### Jak to działa:
+1. Zmienna klasowa `_instance` przechowuje jedyną instancję
+2. Metoda `__new__` sprawdza czy `_instance` już istnieje
+3. Jeśli tak - zwraca istniejącą, jeśli nie - tworzy nową
+4. Wszystkie wywołania `ConfigManager()` zwracają TEN SAM obiekt
 
-### Jak zacząć:
-1. Ukończ Poziom 1 najpierw!
-2. Otwórz `starter_advanced.py`
-3. Uruchom doctests: `python -m doctest starter_advanced.py -v`
-4. Uruchom testy: `python -m pytest test_advanced.py -v`
+### Kluczowy moment:
+```python
+def __new__(cls):
+    if cls._instance is None:
+        cls._instance = super().__new__(cls)
+    return cls._instance
+```
 
- ## 💡 Podpowiedź
-- **Poziom 1**: Focus na core Singleton concept
-- **Poziom 2**: Dodaj threading considerations
-- Sprawdź doctests w każdym pliku
-- Zacznij od prostego, potem zaawansowany
+`__new__` kontroluje tworzenie instancji - zawsze zwraca tę samą.
 
-## ⚠️ Uwagi
-- Singleton to kontrowersyjny wzorzec (global state)
-- W projektach produkcyjnych rozważ Dependency Injection
-- Przydatny dla: config, logging, cache management
-
-## 🔄 Wzorzec w akcji
+---
 
 ### ❌ Bez wzorca:
 ```python
-# Chaos z wieloma instancjami
-config1 = GameConfig()
-config1.set_difficulty("hard")
+class ConfigManager:
+    def __init__(self):
+        self._config = {}
 
-config2 = GameConfig()  # Nowa instancja! ❌
-config2.get_difficulty()  # None - utracone ustawienia ❌
+# Problem: każde wywołanie = NOWA instancja
+config1 = ConfigManager()
+config1.set_config("theme", "dark")
+
+config2 = ConfigManager()  # Nowa instancja!
+config2.get_config("theme")  # None - utracona konfiguracja
 ```
 
-### ✅ Z wzorcem:
-
+### ✅ Z wzorcem (Singleton):
 ```python
-# Jedna globalna instancja
-config1 = GameManager.get_instance()
-config1.set_difficulty("hard")
+class ConfigManager:
+    _instance = None
 
-config2 = GameManager.get_instance()  # Ta sama instancja ✅
-config2.get_difficulty()  # "hard" - zachowane! ✅
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+# Ta sama instancja zawsze
+config1 = ConfigManager()
+config1.set_config("theme", "dark")
+
+config2 = ConfigManager()  # Ta sama instancja!
+config2.get_config("theme")  # "dark" - współdzielony stan
+config1 is config2  # True
 ```
 
-Korzyść: Gwarantuje jedną instancję z globalnym dostępem do stanu
+**Korzyść**: Jedna instancja = współdzielony globalny stan. Wszystkie moduły widzą tę samą konfigurację.
+
+## ⚠️ Uwagi
+- Singleton to kontrowersyjny wzorzec (global state, trudne testowanie)
+- W projektach produkcyjnych rozważ Dependency Injection
+- Przydatny dla: config, logging, cache management
+- Ten przykład to **basic Singleton** (bez thread safety)

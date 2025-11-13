@@ -7,7 +7,7 @@ import time
 from starter import (
     TaskPriority, WorkflowTask, TaskProcessor,
     UrgentTaskProcessor, StandardTaskProcessor, BackgroundTaskProcessor,
-    TaskManager, demonstrate_strategies
+    TaskManager
 )
 
 
@@ -166,7 +166,6 @@ class TestTaskManager:
         manager = TaskManager()
 
         assert manager.strategy is None
-        assert len(manager.processed_tasks) == 0
 
     def test_task_manager_with_initial_strategy(self):
         """Test tworzenia TaskManager z początkową strategią"""
@@ -194,8 +193,6 @@ class TestTaskManager:
 
         assert result["status"] == "completed"
         assert result["strategy_used"] == "urgent"
-        assert len(manager.processed_tasks) == 1
-        assert manager.processed_tasks[0] is task
 
     def test_execute_task_without_strategy(self):
         """Test wykonywania zadania bez ustawionej strategii"""
@@ -204,66 +201,6 @@ class TestTaskManager:
 
         with pytest.raises(ValueError):
             manager.execute_task(task)
-
-    def test_auto_select_strategy_urgent(self):
-        """Test automatycznego wyboru strategii dla zadań pilnych"""
-        manager = TaskManager()
-        task = WorkflowTask("Emergency", TaskPriority.URGENT, "Critical issue")
-
-        manager.auto_select_strategy(task)
-        assert isinstance(manager.strategy, UrgentTaskProcessor)
-
-    def test_auto_select_strategy_standard(self):
-        """Test automatycznego wyboru strategii dla zadań standardowych"""
-        manager = TaskManager()
-
-        for priority in [TaskPriority.HIGH, TaskPriority.MEDIUM]:
-            task = WorkflowTask("Standard task", priority, "Regular work")
-            manager.auto_select_strategy(task)
-            assert isinstance(manager.strategy, StandardTaskProcessor)
-
-    def test_auto_select_strategy_background(self):
-        """Test automatycznego wyboru strategii dla zadań w tle"""
-        manager = TaskManager()
-        task = WorkflowTask("Background task", TaskPriority.LOW, "Low priority work")
-
-        manager.auto_select_strategy(task)
-        assert isinstance(manager.strategy, BackgroundTaskProcessor)
-
-    def test_execute_with_auto_strategy(self):
-        """Test wykonywania z automatycznym wyborem strategii"""
-        manager = TaskManager()
-
-        # Test z zadaniem pilnym
-        urgent_task = WorkflowTask("Emergency", TaskPriority.URGENT, "Critical")
-        result = manager.execute_with_auto_strategy(urgent_task)
-        assert result["strategy_used"] == "urgent"
-
-        # Test z zadaniem w tle
-        background_task = WorkflowTask("Cleanup", TaskPriority.LOW, "Background work")
-        result = manager.execute_with_auto_strategy(background_task)
-        assert result["strategy_used"] == "background"
-
-    def test_processing_stats(self):
-        """Test statystyk przetwarzania"""
-        manager = TaskManager()
-        strategy = StandardTaskProcessor()
-        manager.set_strategy(strategy)
-
-        # Początkowo brak przetworzonych zadań
-        stats = manager.get_processing_stats()
-        assert stats["total_processed"] == 0
-        assert "standard" in str(type(stats["current_strategy"])).lower()
-
-        # Po przetworzeniu zadań
-        task1 = WorkflowTask("Task 1", TaskPriority.MEDIUM, "First task")
-        task2 = WorkflowTask("Task 2", TaskPriority.MEDIUM, "Second task")
-
-        manager.execute_task(task1)
-        manager.execute_task(task2)
-
-        stats = manager.get_processing_stats()
-        assert stats["total_processed"] == 2
 
 
 class TestStrategyPattern:
@@ -346,22 +283,6 @@ class TestStrategyPattern:
 
         # Wszystkie strategie powinny być różne
         assert len(set(results)) == len(results)
-
-
-class TestDemonstrateStrategies:
-    """Testy demonstracji strategii (jeśli zaimplementowane)"""
-
-    @pytest.mark.skip(reason="Optional feature - implement if you have time")
-    def test_demonstrate_strategies(self):
-        """Test demonstracji różnych strategii"""
-        results = demonstrate_strategies()
-
-        assert isinstance(results, list)
-        assert len(results) > 0
-
-        # Sprawdź że mamy wyniki z różnych strategii
-        strategy_types = [r["strategy_used"] for r in results]
-        assert len(set(strategy_types)) > 1
 
 
 if __name__ == "__main__":

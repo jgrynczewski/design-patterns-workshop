@@ -3,7 +3,7 @@ Testy dla Basic Singleton Pattern - Config Manager
 """
 
 import pytest
-from basic_starter import ConfigManager
+from starter import ConfigManager
 
 
 class TestBasicSingleton:

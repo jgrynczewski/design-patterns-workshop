@@ -1,61 +1,68 @@
+"""
+Adapter Pattern - Payment Systems Integration
+Zaimplementuj wzorzec Adapter do integracji różnych systemów płatności.
+
+Adaptery konwertują niekompatybilne interfejsy zewnętrznych API na wspólny interfejs PaymentProcessor.
+
+Examples:
+    >>> # Test PayPal adapter
+    >>> paypal_service = PayPalService()
+    >>> adapter = PayPalAdapter(paypal_service)
+    >>> result = adapter.process_payment(100.50, "USD")
+    >>> result["status"]
+    'success'
+    >>> len(result["transaction_id"]) > 0
+    True
+
+    >>> # Test Stripe adapter
+    >>> stripe_service = StripeService()
+    >>> adapter = StripeAdapter(stripe_service)
+    >>> result = adapter.process_payment(50.00, "EUR")
+    >>> result["status"]
+    'success'
+
+    >>> # Test Przelewy24 adapter
+    >>> p24_service = Przelewy24Service()
+    >>> adapter = Przelewy24Adapter(p24_service)
+    >>> result = adapter.process_payment(200.00, "PLN")
+    >>> result["status"]
+    'success'
+"""
 # %% About
 # - Name: Adapter - Payment Systems Integration
 # - Difficulty: easy
 # - Lines: 15
 # - Minutes: 12
-# - Focus: Adapter pattern core concept
+# - Focus: Wzorzec Adapter
 
 # %% Description
-"""
-Implementuj wzorzec Adapter do integracji różnych systemów płatności
-z jednym wspólnym interfejsem w systemie e-commerce.
 
-Zadanie: Stwórz adaptery dla PayPal, Stripe i Przelewy24 APIs
-"""
-
-# %% Hints
-# - Każdy adapter implementuje PaymentProcessor interface
-# - PayPal wymaga kwoty w centach (amount * 100)
-# - Generuj transaction_id używając uuid lub random
-# - Obsłuż różne formaty response z external APIs
-
-# %% Doctests
-"""
->>> # Test PayPal adapter
->>> paypal_service = PayPalService()
->>> adapter = PayPalAdapter(paypal_service)
->>> result = adapter.process_payment(100.50, "USD")
->>> result["status"]
-'success'
->>> len(result["transaction_id"]) > 0
-True
-
->>> # Test Stripe adapter  
->>> stripe_service = StripeService()
->>> adapter = StripeAdapter(stripe_service)
->>> result = adapter.process_payment(50.00, "EUR")
->>> result["status"]
-'success'
-
->>> # Test Przelewy24 adapter
->>> p24_service = Przelewy24Service()
->>> adapter = Przelewy24Adapter(p24_service)
->>> result = adapter.process_payment(200.00, "PLN")
->>> result["status"]
-'success'
-"""
-
-# %% Imports
 from abc import ABC, abstractmethod
 import uuid
 import random
 
+# %% Hints
+# - Każdy adapter implementuje PaymentProcessor
+# - Adapter zawiera instancję zewnętrznego serwisu (kompozycja)
+# - PayPal wymaga kwoty w centach (amount * 100)
+# - Konwertuj odpowiedzi do formatu: {"status": "success/failed", "transaction_id": "..."}
 
-# %% Mock External APIs (już gotowe - nie modyfikuj)
+# %% Run
+# - PyCharm: right-click and `Run Doctest in ...`
+# - Terminal: `python -m doctest -f -v starter.py`
+# - Tests: `python -m pytest test_adapter.py -v`
+
+
+# %% STEP 1: Mock External APIs - GOTOWE (nie modyfikuj)
+# Te klasy symulują zewnętrzne API płatności - każde ma INNY interfejs
 
 class PayPalService:
-    """Mock PayPal API - expects amount in cents"""
+    """
+    Mock PayPal API - GOTOWE
 
+    Interfejs: make_payment(amount_cents: int, currency: str)
+    Zwraca: {"payment_id": str, "status_code": int}
+    """
     def make_payment(self, amount_cents: int, currency: str) -> dict:
         return {
             "payment_id": f"PAYPAL_{random.randint(1000, 9999)}",
@@ -64,8 +71,12 @@ class PayPalService:
 
 
 class StripeService:
-    """Mock Stripe API - returns charge object"""
+    """
+    Mock Stripe API - GOTOWE
 
+    Interfejs: charge(amount: float, currency: str, source: str)
+    Zwraca: {"id": str, "paid": bool, "amount": float}
+    """
     def charge(self, amount: float, currency: str, source: str = "card_token") -> dict:
         return {
             "id": f"ch_{uuid.uuid4().hex[:8]}",
@@ -75,8 +86,12 @@ class StripeService:
 
 
 class Przelewy24Service:
-    """Mock Przelewy24 API - Polish payment system"""
+    """
+    Mock Przelewy24 API - GOTOWE
 
+    Interfejs: create_transaction(amount: float, currency: str, merchant_id: str)
+    Zwraca: {"transactionId": int, "success": bool}
+    """
     def create_transaction(self, amount: float, currency: str, merchant_id: str = "12345") -> dict:
         return {
             "transactionId": random.randint(100000, 999999),
@@ -84,15 +99,24 @@ class Przelewy24Service:
         }
 
 
-# %% TODO: Implement PaymentProcessor Interface
+# %% STEP 2: Target Interface - GOTOWE (nie modyfikuj)
+# WZORZEC: Target (interfejs docelowy oczekiwany przez klienta)
 
 class PaymentProcessor(ABC):
-    """Common interface for all payment systems"""
+    """
+    Wspólny interfejs dla wszystkich systemów płatności - GOTOWE
+
+    To jest Target interface - wszystkie adaptery muszą go implementować.
+    """
 
     @abstractmethod
     def process_payment(self, amount: float, currency: str) -> dict:
         """
-        Process payment and return standardized response
+        Przetwórz płatność i zwróć standardową odpowiedź
+
+        Args:
+            amount: Kwota płatności
+            currency: Waluta (USD, EUR, PLN)
 
         Returns:
             dict: {"status": "success/failed", "transaction_id": "..."}
@@ -100,67 +124,91 @@ class PaymentProcessor(ABC):
         pass
 
 
-# %% TODO: Implement PayPal Adapter
+# %% STEP 3: PayPal Adapter - DO IMPLEMENTACJI
+# WZORZEC: Adapter (adaptuje PayPalService do PaymentProcessor)
+
+# TODO: Zaimplementuj klasę PayPalAdapter
+#
+# Klasa adaptuje PayPalService do interfejsu PaymentProcessor
+#
+# Dziedziczenie: PayPalAdapter(PaymentProcessor)
+#
+# Konstruktor __init__(self, paypal_service: PayPalService):
+#   - Zapisz paypal_service jako self.paypal_service
+#
+# Metoda process_payment(self, amount: float, currency: str) -> dict:
+#   - Konwertuj amount do centów: amount_cents = int(amount * 100)
+#   - Wywołaj self.paypal_service.make_payment(amount_cents, currency)
+#   - Sprawdź status_code w odpowiedzi
+#   - Jeśli status_code == 200:
+#       zwróć {"status": "success", "transaction_id": payment_id}
+#   - W przeciwnym razie:
+#       zwróć {"status": "failed", "transaction_id": None}
+
 
 class PayPalAdapter:
-    """Adapter for PayPal payment system"""
-
-    def __init__(self, paypal_service: PayPalService):
-        # TODO: Store the paypal service
-        pass
-
-    def process_payment(self, amount: float, currency: str) -> dict:
-        """Convert PayPal API response to standard format"""
-        # TODO:
-        # 1. Convert amount to cents (multiply by 100)
-        # 2. Call paypal_service.make_payment()
-        # 3. Convert response to standard format
-        # 4. Return {"status": "success/failed", "transaction_id": "..."}
-        pass
+    pass
 
 
-# %% TODO: Implement Stripe Adapter
+# %% STEP 4: Stripe Adapter - DO IMPLEMENTACJI
+# WZORZEC: Adapter (adaptuje StripeService do PaymentProcessor)
+
+# TODO: Zaimplementuj klasę StripeAdapter
+#
+# Klasa adaptuje StripeService do interfejsu PaymentProcessor
+#
+# Dziedziczenie: StripeAdapter(PaymentProcessor)
+#
+# Konstruktor __init__(self, stripe_service: StripeService):
+#   - Zapisz stripe_service jako self.stripe_service
+#
+# Metoda process_payment(self, amount: float, currency: str) -> dict:
+#   - Wywołaj self.stripe_service.charge(amount, currency)
+#   - Sprawdź pole "paid" w odpowiedzi
+#   - Jeśli paid == True:
+#       zwróć {"status": "success", "transaction_id": id}
+#   - W przeciwnym razie:
+#       zwróć {"status": "failed", "transaction_id": None}
+
 
 class StripeAdapter:
-    """Adapter for Stripe payment system"""
-
-    def __init__(self, stripe_service: StripeService):
-        # TODO: Store the stripe service
-        pass
-
-    def process_payment(self, amount: float, currency: str) -> dict:
-        """Convert Stripe API response to standard format"""
-        # TODO:
-        # 1. Call stripe_service.charge()
-        # 2. Check if payment was successful (paid == True)
-        # 3. Convert response to standard format
-        # 4. Return {"status": "success/failed", "transaction_id": "..."}
-        pass
+    pass
 
 
-# %% TODO: Implement Przelewy24 Adapter
+# %% STEP 5: Przelewy24 Adapter - DO IMPLEMENTACJI
+# WZORZEC: Adapter (adaptuje Przelewy24Service do PaymentProcessor)
+
+# TODO: Zaimplementuj klasę Przelewy24Adapter
+#
+# Klasa adaptuje Przelewy24Service do interfejsu PaymentProcessor
+#
+# Dziedziczenie: Przelewy24Adapter(PaymentProcessor)
+#
+# Konstruktor __init__(self, p24_service: Przelewy24Service):
+#   - Zapisz p24_service jako self.p24_service
+#
+# Metoda process_payment(self, amount: float, currency: str) -> dict:
+#   - Wywołaj self.p24_service.create_transaction(amount, currency)
+#   - Sprawdź pole "success" w odpowiedzi
+#   - Jeśli success == True:
+#       zwróć {"status": "success", "transaction_id": str(transactionId)}
+#   - W przeciwnym razie:
+#       zwróć {"status": "failed", "transaction_id": None}
+
 
 class Przelewy24Adapter:
-    """Adapter for Przelewy24 payment system"""
-
-    def __init__(self, p24_service: Przelewy24Service):
-        # TODO: Store the p24 service
-        pass
-
-    def process_payment(self, amount: float, currency: str) -> dict:
-        """Convert Przelewy24 API response to standard format"""
-        # TODO:
-        # 1. Call p24_service.create_transaction()
-        # 2. Check if transaction was successful
-        # 3. Convert response to standard format
-        # 4. Return {"status": "success/failed", "transaction_id": "..."}
-        pass
-
-
-# %% Factory Function (Optional Enhancement)
-
-def get_payment_processor(provider: str, service_instance) -> PaymentProcessor:
-    """Factory function to get appropriate payment processor"""
-    # TODO: Return appropriate adapter based on provider name
-    # This is optional - implement if you have extra time
     pass
+
+
+# %% Example Usage
+# Odkomentuj gdy zaimplementujesz
+# if __name__ == "__main__":
+#     # Klient używa tylko interfejsu PaymentProcessor
+#     paypal = PayPalAdapter(PayPalService())
+#     stripe = StripeAdapter(StripeService())
+#     p24 = Przelewy24Adapter(Przelewy24Service())
+#
+#     # Ten sam interfejs dla wszystkich!
+#     print(paypal.process_payment(100.50, "USD"))
+#     print(stripe.process_payment(50.00, "EUR"))
+#     print(p24.process_payment(200.00, "PLN"))

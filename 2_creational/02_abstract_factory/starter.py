@@ -1,26 +1,3 @@
-# %% About
-# - Name: Abstract Factory - Equipment Systems RPG
-# - Difficulty: medium
-# - Lines: 12
-# - Minutes: 15
-# - Focus: Abstract Factory pattern + product families
-
-# %% Description
-"""
-Abstract Factory Pattern - RPG Equipment
-Zaimplementuj wzorzec Abstract Factory do tworzenia spójnych zestawów ekwipunku.
-"""
-
-from abc import ABC, abstractmethod
-
-# %% Hints
-# - Each concrete factory creates family of related products
-# - Use inheritance: Sword(Weapon), HeavyArmor(Armor)
-# - Factory method: get_equipment_factory(character_class)
-# - Case-insensitive input with .lower()
-# - Consistent damage/defense values per character class
-
-# %% Doctests
 """
 >>> import sys; sys.tracebacklimit = 0
 
@@ -70,6 +47,30 @@ True
 Traceback (most recent call last):
 ValueError: Unknown character class: invalid
 """
+
+# %% About
+# - Name: Abstract Factory - Equipment Systems RPG
+# - Difficulty: medium
+# - Lines: 12
+# - Minutes: 15
+# - Focus: Abstract Factory pattern + product families
+
+# %% Description
+"""
+Abstract Factory Pattern - RPG Equipment
+Zaimplementuj wzorzec Abstract Factory do tworzenia spójnych zestawów ekwipunku.
+"""
+
+from abc import ABC, abstractmethod
+
+# %% Hints
+# - Each concrete factory creates family of related products
+# - Use inheritance: Sword(Weapon), HeavyArmor(Armor)
+# - Factory method: get_equipment_factory(character_class)
+# - Case-insensitive input with .lower()
+# - Consistent damage/defense values per character class
+
+# %% Doctests
 
 
 # %% Run

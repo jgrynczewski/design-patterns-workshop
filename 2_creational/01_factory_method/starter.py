@@ -33,9 +33,6 @@ Factory Method Pattern - RPG Weapons
 
 # %% About
 # - Name: Factory Method - RPG Weapons
-# - Difficulty: easy
-# - Lines: 20
-# - Minutes: 15
 # - Focus: Factory Method pattern - subclasses decide what to create
 
 # %% Description

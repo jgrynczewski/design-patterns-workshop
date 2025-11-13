@@ -1,166 +1,174 @@
-# %% About
-# - Name: Adapter - Payment Systems Integration
-# - Difficulty: easy
-# - Lines: 15
-# - Minutes: 12
-# - Focus: Adapter pattern core concept
-
-# %% Description
 """
-Implementuj wzorzec Adapter do integracji różnych systemów płatności
-z jednym wspólnym interfejsem w systemie e-commerce.
-
-Zadanie: Stwórz adaptery dla PayPal, Stripe i Przelewy24 APIs
+Testy dla wzorca Adapter - Payment Systems Integration
 """
 
-# %% Hints
-# - Każdy adapter implementuje PaymentProcessor interface
-# - PayPal wymaga kwoty w centach (amount * 100)
-# - Generuj transaction_id używając uuid lub random
-# - Obsłuż różne formaty response z external APIs
-
-# %% Doctests
-"""
->>> # Test PayPal adapter
->>> paypal_service = PayPalService()
->>> adapter = PayPalAdapter(paypal_service)
->>> result = adapter.process_payment(100.50, "USD")
->>> result["status"]
-'success'
->>> len(result["transaction_id"]) > 0
-True
-
->>> # Test Stripe adapter  
->>> stripe_service = StripeService()
->>> adapter = StripeAdapter(stripe_service)
->>> result = adapter.process_payment(50.00, "EUR")
->>> result["status"]
-'success'
-
->>> # Test Przelewy24 adapter
->>> p24_service = Przelewy24Service()
->>> adapter = Przelewy24Adapter(p24_service)
->>> result = adapter.process_payment(200.00, "PLN")
->>> result["status"]
-'success'
-"""
-
-# %% Imports
-from abc import ABC, abstractmethod
-import uuid
-import random
+import pytest
+from starter import (
+    PayPalService, StripeService, Przelewy24Service,
+    PaymentProcessor,
+    PayPalAdapter, StripeAdapter, Przelewy24Adapter
+)
 
 
-# %% Mock External APIs (już gotowe - nie modyfikuj)
+class TestPaymentProcessorInterface:
+    """Testy interfejsu PaymentProcessor"""
 
-class PayPalService:
-    """Mock PayPal API - oczekuje kwoty w centach"""
+    def test_paypal_adapter_implements_interface(self):
+        """Test czy PayPalAdapter implementuje PaymentProcessor"""
+        paypal = PayPalAdapter(PayPalService())
+        assert isinstance(paypal, PaymentProcessor)
 
-    def make_payment(self, amount_cents: int, currency: str) -> dict:
-        return {
-            "payment_id": f"PAYPAL_{random.randint(1000, 9999)}",
-            "status_code": 200 if amount_cents > 0 else 400
-        }
+    def test_stripe_adapter_implements_interface(self):
+        """Test czy StripeAdapter implementuje PaymentProcessor"""
+        stripe = StripeAdapter(StripeService())
+        assert isinstance(stripe, PaymentProcessor)
 
-
-class StripeService:
-    """Mock Stripe API - zwraca obiekt charge"""
-
-    def charge(self, amount: float, currency: str, source: str = "card_token") -> dict:
-        return {
-            "id": f"ch_{uuid.uuid4().hex[:8]}",
-            "paid": amount > 0,
-            "amount": amount
-        }
+    def test_przelewy24_adapter_implements_interface(self):
+        """Test czy Przelewy24Adapter implementuje PaymentProcessor"""
+        p24 = Przelewy24Adapter(Przelewy24Service())
+        assert isinstance(p24, PaymentProcessor)
 
 
-class Przelewy24Service:
-    """Mock Przelewy24 API - polski system płatności"""
+class TestPayPalAdapter:
+    """Testy adaptera PayPal"""
 
-    def create_transaction(self, amount: float, currency: str, merchant_id: str = "12345") -> dict:
-        return {
-            "transactionId": random.randint(100000, 999999),
-            "success": amount > 0 and currency == "PLN"
-        }
+    def test_successful_payment(self):
+        """Test pomyślnej płatności przez PayPal"""
+        service = PayPalService()
+        adapter = PayPalAdapter(service)
 
+        result = adapter.process_payment(100.50, "USD")
 
-# %% TODO: Implement PaymentProcessor Interface
+        assert result["status"] == "success"
+        assert result["transaction_id"] is not None
+        assert "PAYPAL_" in result["transaction_id"]
 
-class PaymentProcessor(ABC):
-    """Wspólny interfejs dla wszystkich systemów płatności"""
+    def test_converts_amount_to_cents(self):
+        """Test konwersji kwoty do centów"""
+        service = PayPalService()
+        adapter = PayPalAdapter(service)
 
-    @abstractmethod
-    def process_payment(self, amount: float, currency: str) -> dict:
-        """
-        Przetwórz płatność i zwróć standardową odpowiedź
+        # PayPal powinien otrzymać kwotę w centach
+        result = adapter.process_payment(100.00, "USD")
+        assert result["status"] == "success"
 
-        Returns:
-            dict: {"status": "success/failed", "transaction_id": "..."}
-        """
-        pass
+    def test_different_currencies(self):
+        """Test różnych walut"""
+        service = PayPalService()
+        adapter = PayPalAdapter(service)
 
-
-# %% TODO: Implement PayPal Adapter
-
-class PayPalAdapter:
-    """Adapter dla systemu płatności PayPal"""
-
-    def __init__(self, paypal_service: PayPalService):
-        # TODO: Zapisz serwis paypal
-        pass
-
-    def process_payment(self, amount: float, currency: str) -> dict:
-        """Konwertuj odpowiedź PayPal API do standardowego formatu"""
-        # TODO:
-        # 1. Konwertuj kwotę do centów (pomnóż przez 100)
-        # 2. Wywołaj paypal_service.make_payment()
-        # 3. Konwertuj odpowiedź do standardowego formatu
-        # 4. Zwróć {"status": "success/failed", "transaction_id": "..."}
-        pass
+        for currency in ["USD", "EUR", "PLN"]:
+            result = adapter.process_payment(50.00, currency)
+            assert result["status"] == "success"
 
 
-# %% TODO: Implement Stripe Adapter
+class TestStripeAdapter:
+    """Testy adaptera Stripe"""
 
-class StripeAdapter:
-    """Adapter dla systemu płatności Stripe"""
+    def test_successful_payment(self):
+        """Test pomyślnej płatności przez Stripe"""
+        service = StripeService()
+        adapter = StripeAdapter(service)
 
-    def __init__(self, stripe_service: StripeService):
-        # TODO: Zapisz serwis stripe
-        pass
+        result = adapter.process_payment(50.00, "EUR")
 
-    def process_payment(self, amount: float, currency: str) -> dict:
-        """Konwertuj odpowiedź Stripe API do standardowego formatu"""
-        # TODO:
-        # 1. Wywołaj stripe_service.charge()
-        # 2. Sprawdź czy płatność była pomyślna (paid == True)
-        # 3. Konwertuj odpowiedź do standardowego formatu
-        # 4. Zwróć {"status": "success/failed", "transaction_id": "..."}
-        pass
+        assert result["status"] == "success"
+        assert result["transaction_id"] is not None
+        assert "ch_" in result["transaction_id"]
 
+    def test_transaction_id_format(self):
+        """Test formatu transaction_id"""
+        service = StripeService()
+        adapter = StripeAdapter(service)
 
-# %% TODO: Implement Przelewy24 Adapter
+        result = adapter.process_payment(75.25, "EUR")
 
-class Przelewy24Adapter:
-    """Adapter dla systemu płatności Przelewy24"""
+        assert result["transaction_id"].startswith("ch_")
+        assert len(result["transaction_id"]) > 3
 
-    def __init__(self, p24_service: Przelewy24Service):
-        # TODO: Zapisz serwis p24
-        pass
+    def test_different_currencies(self):
+        """Test różnych walut"""
+        service = StripeService()
+        adapter = StripeAdapter(service)
 
-    def process_payment(self, amount: float, currency: str) -> dict:
-        """Konwertuj odpowiedź Przelewy24 API do standardowego formatu"""
-        # TODO:
-        # 1. Wywołaj p24_service.create_transaction()
-        # 2. Sprawdź czy transakcja była pomyślna
-        # 3. Konwertuj odpowiedź do standardowego formatu
-        # 4. Zwróć {"status": "success/failed", "transaction_id": "..."}
-        pass
+        for currency in ["USD", "EUR", "GBP"]:
+            result = adapter.process_payment(100.00, currency)
+            assert result["status"] == "success"
 
 
-# %% Factory Function (Optional Enhancement)
+class TestPrzelewy24Adapter:
+    """Testy adaptera Przelewy24"""
 
-def get_payment_processor(provider: str, service_instance) -> PaymentProcessor:
-    """Funkcja factory do otrzymania odpowiedniego procesora płatności"""
-    # TODO: Zwróć odpowiedni adapter na podstawie nazwy providera
-    # To jest opcjonalne - zaimplementuj jeśli masz dodatkowy czas
-    pass
+    def test_successful_payment_pln(self):
+        """Test pomyślnej płatności w PLN"""
+        service = Przelewy24Service()
+        adapter = Przelewy24Adapter(service)
+
+        result = adapter.process_payment(200.00, "PLN")
+
+        assert result["status"] == "success"
+        assert result["transaction_id"] is not None
+        assert isinstance(result["transaction_id"], str)
+
+    def test_transaction_id_is_string(self):
+        """Test że transaction_id jest stringiem"""
+        service = Przelewy24Service()
+        adapter = Przelewy24Adapter(service)
+
+        result = adapter.process_payment(150.00, "PLN")
+
+        # transactionId z API to int, ale powinien być skonwertowany na str
+        assert isinstance(result["transaction_id"], str)
+        assert result["transaction_id"].isdigit()
+
+    def test_pln_currency_required(self):
+        """Test że Przelewy24 akceptuje tylko PLN"""
+        service = Przelewy24Service()
+        adapter = Przelewy24Adapter(service)
+
+        # PLN powinno działać
+        result_pln = adapter.process_payment(100.00, "PLN")
+        assert result_pln["status"] == "success"
+
+
+class TestStandardizedResponse:
+    """Testy standaryzacji odpowiedzi"""
+
+    def test_all_adapters_return_same_format(self):
+        """Test że wszystkie adaptery zwracają ten sam format"""
+        paypal = PayPalAdapter(PayPalService())
+        stripe = StripeAdapter(StripeService())
+        p24 = Przelewy24Adapter(Przelewy24Service())
+
+        adapters = [paypal, stripe, p24]
+        amount = 100.00
+        currencies = ["USD", "EUR", "PLN"]
+
+        for adapter, currency in zip(adapters, currencies):
+            result = adapter.process_payment(amount, currency)
+
+            # Sprawdź strukturę odpowiedzi
+            assert "status" in result
+            assert "transaction_id" in result
+
+            # Sprawdź wartości
+            assert result["status"] in ["success", "failed"]
+            assert result["transaction_id"] is not None or result["status"] == "failed"
+
+    def test_consistent_success_status(self):
+        """Test spójności statusu success"""
+        adapters = [
+            PayPalAdapter(PayPalService()),
+            StripeAdapter(StripeService()),
+            Przelewy24Adapter(Przelewy24Service())
+        ]
+
+        for adapter in adapters:
+            # Dla dodatnich kwot wszystkie powinny zwrócić success
+            result = adapter.process_payment(50.00, "PLN" if isinstance(adapter, Przelewy24Adapter) else "USD")
+            assert result["status"] == "success"
+            assert result["transaction_id"] is not None
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
