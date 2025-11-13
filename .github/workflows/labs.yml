@@ -31,8 +31,8 @@ jobs:
           cd 0_intro/01_hello
           pytest -v --tb=short
 
-  lab-02-solid-srp:
-    name: "Lab 02 - SOLID: SRP (10 pts)"
+  lab-02-grasp-coupling:
+    name: "Lab 02 - GRASP: Low Coupling (10 pts)"
     runs-on: ubuntu-latest
 
     steps:
@@ -51,11 +51,11 @@ jobs:
 
       - name: Run Lab 02 tests
         run: |
-          cd 1_principles/01_solid/01_srp
+          cd 1_principles/01_grasp/04_low_coupling
           pytest -v --tb=short
 
-  lab-03-grasp-expert:
-    name: "Lab 03 - GRASP: Expert (10 pts)"
+  lab-03-solid-ocp:
+    name: "Lab 03 - SOLID: OCP (10 pts)"
     runs-on: ubuntu-latest
 
     steps:
@@ -74,14 +74,14 @@ jobs:
 
       - name: Run Lab 03 tests
         run: |
-          cd 1_principles/02_grasp/01_information_expert
+          cd 1_principles/02_solid/02_ocp
           pytest -v --tb=short
 
   # Summary job - pokazuje ogólny status
   summary:
     name: "Summary"
     runs-on: ubuntu-latest
-    needs: [lab-01-intro-hello, lab-02-solid-srp, lab-03-grasp-expert]
+    needs: [lab-01-intro-hello, lab-02-grasp-coupling, lab-03-solid-ocp]
     if: always()
 
     steps:
@@ -91,6 +91,6 @@ jobs:
           echo "Design Patterns Workshop - Test Summary"
           echo "============================================"
           echo "Lab 01 - Intro Calculator: ${{ needs.lab-01-intro-hello.result }}"
-          echo "Lab 02 - SOLID SRP: ${{ needs.lab-02-solid-srp.result }}"
-          echo "Lab 03 - GRASP Expert: ${{ needs.lab-03-grasp-expert.result }}"
+          echo "Lab 02 - GRASP Low Coupling: ${{ needs.lab-02-grasp-coupling.result }}"
+          echo "Lab 03 - SOLID OCP: ${{ needs.lab-03-solid-ocp.result }}"
           echo "============================================"

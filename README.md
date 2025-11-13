@@ -9,8 +9,8 @@ Warsztat wzorców projektowych w Pythonie
 | Lab | Temat | Punkty |
 |-----|-------|--------|
 | 01 | Intro: Kalkulator | 10 |
-| 02 | SOLID: SRP | 10 |
-| 03 | GRASP: Expert | 10 |
+| 02 | GRASP: Low Coupling | 10 |
+| 03 | SOLID: OCP | 10 |
 
 **Razem: 0/30 pkt**
 
@@ -33,12 +33,12 @@ pip install -r requirements.txt
 cd 0_intro/01_hello
 pytest -v
 
-# Lab 02 - SOLID SRP
-cd 1_principles/01_solid/01_srp
+# Lab 02 - GRASP Low Coupling
+cd 1_principles/01_grasp/04_low_coupling
 pytest -v
 
-# Lab 03 - GRASP Expert
-cd 1_principles/02_grasp/01_information_expert
+# Lab 03 - SOLID OCP
+cd 1_principles/02_solid/02_ocp
 pytest -v
 ```
 
