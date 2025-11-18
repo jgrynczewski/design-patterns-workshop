@@ -1,27 +1,33 @@
-# Problem bez wzorca Singleton
-# Pokazuje chaos z wieloma instancjami zarządzającymi konfiguracją
+"""
+❌ PROBLEM: Brak wzorca Singleton - wiele instancji, utrata stanu
+
+Problem: Każde ConfigManager() tworzy NOWĄ instancję z WŁASNYM stanem
+- Brak współdzielonego globalnego stanu
+- Różne moduły widzą różne wartości
+- Chaos z wieloma instancjami
+"""
 
 from typing import Any, Dict
 
 
-# ❌ PROBLEM: Zwykła klasa - każde wywołanie tworzy NOWĄ instancję
 class ConfigManager:
     """
     Config Manager BEZ wzorca Singleton
 
-    Problem: Każde ConfigManager() tworzy NOWĄ instancję z WŁASNYM stanem
+    ❌ Problem: Każde wywołanie ConfigManager() = NOWA instancja
     """
 
     def __init__(self):
-        # ❌ Każda instancja ma SWÓJ słownik - brak współdzielonego stanu!
+        # ❌ Każda instancja ma SWÓJ słownik - brak współdzielenia!
         self._config: Dict[str, Any] = {}
 
-    # Metody pomocnicze (nie związane z wzorcem)
     def set_config(self, key: str, value: Any) -> None:
+        """Ustawia wartość konfiguracji"""
         self._config[key] = value
 
-    def get_config(self, key: str, default: Any = None) -> Any:
-        return self._config.get(key, default)
+    def get_config(self, key: str) -> Any:
+        """Pobiera wartość konfiguracji"""
+        return self._config.get(key)
 
 
 # ❌ Przykład użycia
@@ -47,7 +53,7 @@ if __name__ == "__main__":
 
 
 """
-Jakie problemy rozwiązuje Singleton?
+Dlaczego to jest ZŁE?
 
 1. ❌ Utrata stanu między modułami
    - Każdy moduł tworzy swoją instancję ConfigManager
@@ -60,18 +66,13 @@ Jakie problemy rozwiązuje Singleton?
    - Niespójność: różne instancje mogą mieć różne wartości
 
 3. ❌ Brak kontroli nad liczbą instancji
-   - Nic nie powstrzymuje programisty przed ConfigManager() × 100
+   - Nic nie powstrzymuje przed ConfigManager() × 100
    - Trudno debugować: która instancja jest "prawdziwa"?
    - Chaotyczny dostęp do konfiguracji
-
-4. ❌ Trudne testowanie
-   - Nie wiadomo która instancja jest używana w testach
-   - Cleanup po testach: trzeba znaleźć WSZYSTKIE instancje
-   - Izolacja testów: jedna test tworzy instancję, inna może ją nadpisać
 
 Jak Singleton to rozwiązuje?
 1. Tylko JEDNA instancja w całej aplikacji (kontrolowane przez __new__)
 2. Współdzielony globalny stan - wszystkie moduły widzą te same dane
 3. config1 = ConfigManager(); config2 = ConfigManager() → config1 is config2 (True)
-4. Łatwy reset w testach: ConfigManager._instance = None
+4. Implementacja: _instance = None + __new__ sprawdzający czy instancja już istnieje
 """

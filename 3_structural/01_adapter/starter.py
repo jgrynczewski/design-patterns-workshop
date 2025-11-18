@@ -1,59 +1,36 @@
 """
 Adapter Pattern - Payment Systems Integration
-Zaimplementuj wzorzec Adapter do integracji różnych systemów płatności.
 
-Adaptery konwertują niekompatybilne interfejsy zewnętrznych API na wspólny interfejs PaymentProcessor.
+>>> # Test PayPal adapter
+>>> paypal_service = PayPalService()
+>>> adapter = PayPalAdapter(paypal_service)
+>>> result = adapter.process_payment(100.50, "USD")
+>>> result["status"]
+'success'
+>>> len(result["transaction_id"]) > 0
+True
 
-Examples:
-    >>> # Test PayPal adapter
-    >>> paypal_service = PayPalService()
-    >>> adapter = PayPalAdapter(paypal_service)
-    >>> result = adapter.process_payment(100.50, "USD")
-    >>> result["status"]
-    'success'
-    >>> len(result["transaction_id"]) > 0
-    True
+>>> # Test Stripe adapter
+>>> stripe_service = StripeService()
+>>> adapter = StripeAdapter(stripe_service)
+>>> result = adapter.process_payment(50.00, "EUR")
+>>> result["status"]
+'success'
 
-    >>> # Test Stripe adapter
-    >>> stripe_service = StripeService()
-    >>> adapter = StripeAdapter(stripe_service)
-    >>> result = adapter.process_payment(50.00, "EUR")
-    >>> result["status"]
-    'success'
-
-    >>> # Test Przelewy24 adapter
-    >>> p24_service = Przelewy24Service()
-    >>> adapter = Przelewy24Adapter(p24_service)
-    >>> result = adapter.process_payment(200.00, "PLN")
-    >>> result["status"]
-    'success'
+>>> # Test Przelewy24 adapter
+>>> p24_service = Przelewy24Service()
+>>> adapter = Przelewy24Adapter(p24_service)
+>>> result = adapter.process_payment(200.00, "PLN")
+>>> result["status"]
+'success'
 """
-# %% About
-# - Name: Adapter - Payment Systems Integration
-# - Difficulty: easy
-# - Lines: 15
-# - Minutes: 12
-# - Focus: Wzorzec Adapter
-
-# %% Description
 
 from abc import ABC, abstractmethod
 import uuid
 import random
 
-# %% Hints
-# - Każdy adapter implementuje PaymentProcessor
-# - Adapter zawiera instancję zewnętrznego serwisu (kompozycja)
-# - PayPal wymaga kwoty w centach (amount * 100)
-# - Konwertuj odpowiedzi do formatu: {"status": "success/failed", "transaction_id": "..."}
 
-# %% Run
-# - PyCharm: right-click and `Run Doctest in ...`
-# - Terminal: `python -m doctest -f -v starter.py`
-# - Tests: `python -m pytest test_adapter.py -v`
-
-
-# %% STEP 1: Mock External APIs - GOTOWE (nie modyfikuj)
+# Mock External APIs - GOTOWE (nie modyfikuj)
 # Te klasy symulują zewnętrzne API płatności - każde ma INNY interfejs
 
 class PayPalService:
@@ -99,8 +76,7 @@ class Przelewy24Service:
         }
 
 
-# %% STEP 2: Target Interface - GOTOWE (nie modyfikuj)
-# WZORZEC: Target (interfejs docelowy oczekiwany przez klienta)
+# Target Interface - GOTOWE (nie modyfikuj)
 
 class PaymentProcessor(ABC):
     """
@@ -124,84 +100,41 @@ class PaymentProcessor(ABC):
         pass
 
 
-# %% STEP 3: PayPal Adapter - DO IMPLEMENTACJI
-# WZORZEC: Adapter (adaptuje PayPalService do PaymentProcessor)
-
-# TODO: Zaimplementuj klasę PayPalAdapter
-#
-# Klasa adaptuje PayPalService do interfejsu PaymentProcessor
-#
-# Dziedziczenie: PayPalAdapter(PaymentProcessor)
-#
-# Konstruktor __init__(self, paypal_service: PayPalService):
-#   - Zapisz paypal_service jako self.paypal_service
-#
-# Metoda process_payment(self, amount: float, currency: str) -> dict:
-#   - Konwertuj amount do centów: amount_cents = int(amount * 100)
-#   - Wywołaj self.paypal_service.make_payment(amount_cents, currency)
-#   - Sprawdź status_code w odpowiedzi
-#   - Jeśli status_code == 200:
-#       zwróć {"status": "success", "transaction_id": payment_id}
-#   - W przeciwnym razie:
-#       zwróć {"status": "failed", "transaction_id": None}
-
+# TODO: Zaimplementuj PayPalAdapter
+# Dziedziczy po PaymentProcessor
+# Kompozycja: zawiera PayPalService
+# Metoda process_payment():
+#   - Konwertuje parametry (amount → amount_cents)
+#   - Wywołuje paypal_service.make_payment()
+#   - Standaryzuje odpowiedź ({"status": ..., "transaction_id": ...})
 
 class PayPalAdapter:
     pass
 
 
-# %% STEP 4: Stripe Adapter - DO IMPLEMENTACJI
-# WZORZEC: Adapter (adaptuje StripeService do PaymentProcessor)
-
-# TODO: Zaimplementuj klasę StripeAdapter
-#
-# Klasa adaptuje StripeService do interfejsu PaymentProcessor
-#
-# Dziedziczenie: StripeAdapter(PaymentProcessor)
-#
-# Konstruktor __init__(self, stripe_service: StripeService):
-#   - Zapisz stripe_service jako self.stripe_service
-#
-# Metoda process_payment(self, amount: float, currency: str) -> dict:
-#   - Wywołaj self.stripe_service.charge(amount, currency)
-#   - Sprawdź pole "paid" w odpowiedzi
-#   - Jeśli paid == True:
-#       zwróć {"status": "success", "transaction_id": id}
-#   - W przeciwnym razie:
-#       zwróć {"status": "failed", "transaction_id": None}
-
+# TODO: Zaimplementuj StripeAdapter
+# Dziedziczy po PaymentProcessor
+# Kompozycja: zawiera StripeService
+# Metoda process_payment():
+#   - Wywołuje stripe_service.charge()
+#   - Standaryzuje odpowiedź ({"status": ..., "transaction_id": ...})
 
 class StripeAdapter:
     pass
 
 
-# %% STEP 5: Przelewy24 Adapter - DO IMPLEMENTACJI
-# WZORZEC: Adapter (adaptuje Przelewy24Service do PaymentProcessor)
-
-# TODO: Zaimplementuj klasę Przelewy24Adapter
-#
-# Klasa adaptuje Przelewy24Service do interfejsu PaymentProcessor
-#
-# Dziedziczenie: Przelewy24Adapter(PaymentProcessor)
-#
-# Konstruktor __init__(self, p24_service: Przelewy24Service):
-#   - Zapisz p24_service jako self.p24_service
-#
-# Metoda process_payment(self, amount: float, currency: str) -> dict:
-#   - Wywołaj self.p24_service.create_transaction(amount, currency)
-#   - Sprawdź pole "success" w odpowiedzi
-#   - Jeśli success == True:
-#       zwróć {"status": "success", "transaction_id": str(transactionId)}
-#   - W przeciwnym razie:
-#       zwróć {"status": "failed", "transaction_id": None}
-
+# TODO: Zaimplementuj Przelewy24Adapter
+# Dziedziczy po PaymentProcessor
+# Kompozycja: zawiera Przelewy24Service
+# Metoda process_payment():
+#   - Wywołuje p24_service.create_transaction()
+#   - Standaryzuje odpowiedź ({"status": ..., "transaction_id": ...})
 
 class Przelewy24Adapter:
     pass
 
 
-# %% Example Usage
-# Odkomentuj gdy zaimplementujesz
+# Przykład użycia - odkomentuj gdy zaimplementujesz:
 # if __name__ == "__main__":
 #     # Klient używa tylko interfejsu PaymentProcessor
 #     paypal = PayPalAdapter(PayPalService())

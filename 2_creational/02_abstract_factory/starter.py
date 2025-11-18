@@ -1,12 +1,8 @@
 """
 >>> import sys; sys.tracebacklimit = 0
 
->>> # Test factory creation
->>> warrior_factory = get_equipment_factory("warrior")
->>> mage_factory = get_equipment_factory("mage")
->>> archer_factory = get_equipment_factory("archer")
-
->>> # Test warrior equipment (high damage + defense)
+>>> # Test Warrior factory
+>>> warrior_factory = WarriorEquipmentFactory()
 >>> warrior_weapon = warrior_factory.create_weapon()
 >>> warrior_armor = warrior_factory.create_armor()
 >>> warrior_weapon.damage() >= 80
@@ -16,7 +12,8 @@ True
 >>> "sword" in warrior_weapon.get_name().lower()
 True
 
->>> # Test mage equipment (medium damage + low defense)
+>>> # Test Mage factory
+>>> mage_factory = MageEquipmentFactory()
 >>> mage_weapon = mage_factory.create_weapon()
 >>> mage_armor = mage_factory.create_armor()
 >>> mage_weapon.damage() >= 40
@@ -26,7 +23,8 @@ True
 >>> "staff" in mage_weapon.get_name().lower()
 True
 
->>> # Test archer equipment (medium-high damage + medium defense)
+>>> # Test Archer factory
+>>> archer_factory = ArcherEquipmentFactory()
 >>> archer_weapon = archer_factory.create_weapon()
 >>> archer_armor = archer_factory.create_armor()
 >>> archer_weapon.damage() >= 60
@@ -36,49 +34,19 @@ True
 >>> "bow" in archer_weapon.get_name().lower()
 True
 
->>> # Test case insensitive
->>> factory1 = get_equipment_factory("WARRIOR")
->>> factory2 = get_equipment_factory("warrior")
->>> type(factory1).__name__ == type(factory2).__name__
+>>> # Test każda fabryka implementuje interfejs
+>>> isinstance(warrior_factory, EquipmentFactory)
 True
-
->>> # Test error handling
->>> get_equipment_factory("invalid")
-Traceback (most recent call last):
-ValueError: Unknown character class: invalid
-"""
-
-# %% About
-# - Name: Abstract Factory - Equipment Systems RPG
-# - Difficulty: medium
-# - Lines: 12
-# - Minutes: 15
-# - Focus: Abstract Factory pattern + product families
-
-# %% Description
-"""
-Abstract Factory Pattern - RPG Equipment
-Zaimplementuj wzorzec Abstract Factory do tworzenia spójnych zestawów ekwipunku.
+>>> isinstance(mage_factory, EquipmentFactory)
+True
+>>> isinstance(archer_factory, EquipmentFactory)
+True
 """
 
 from abc import ABC, abstractmethod
 
-# %% Hints
-# - Each concrete factory creates family of related products
-# - Use inheritance: Sword(Weapon), HeavyArmor(Armor)
-# - Factory method: get_equipment_factory(character_class)
-# - Case-insensitive input with .lower()
-# - Consistent damage/defense values per character class
 
-# %% Doctests
-
-
-# %% Run
-# - PyCharm: right-click and `Run Doctest in ...`
-# - Terminal: `python -m doctest -f -v starter.py`
-# - Tests: `python -m pytest test_abstract_factory.py -v`
-
-# %% TODO: Implement Product Interfaces
+# Product Interfaces - GOTOWE
 
 class Weapon(ABC):
     """Bazowy interfejs dla broni"""
@@ -108,51 +76,82 @@ class Armor(ABC):
         pass
 
 
-# %% TODO: Implement Abstract Factory
+# Concrete Products - GOTOWE (takie same jak w problem.py)
+# Te klasy są już zaimplementowane - skupiamy się na fabrykach!
 
-class EquipmentFactory(ABC):
-    """Abstract Factory dla ekwipunku"""
+class Sword(Weapon):
+    """Miecz - broń wojownika"""
 
-    @abstractmethod
-    def create_weapon(self) -> Weapon:
-        """Tworzy broń odpowiednią dla klasy"""
-        pass
+    def damage(self) -> int:
+        return 100
 
-    @abstractmethod
-    def create_armor(self) -> Armor:
-        """Tworzy pancerz odpowiedni dla klasy"""
-        pass
+    def get_name(self) -> str:
+        return "Heavy Sword"
 
 
-# %% TODO: Implement Concrete Products - Weapons
+class Staff(Weapon):
+    """Laska - broń maga"""
 
-class Sword:
+    def damage(self) -> int:
+        return 50
+
+    def get_name(self) -> str:
+        return "Magic Staff"
+
+
+class Bow(Weapon):
+    """Łuk - broń łucznika"""
+
+    def damage(self) -> int:
+        return 70
+
+    def get_name(self) -> str:
+        return "Long Bow"
+
+
+class HeavyArmor(Armor):
+    """Ciężka zbroja - pancerz wojownika"""
+
+    def defense(self) -> int:
+        return 60
+
+    def get_name(self) -> str:
+        return "Heavy Plate Armor"
+
+
+class LightRobe(Armor):
+    """Lekka szata - pancerz maga"""
+
+    def defense(self) -> int:
+        return 20
+
+    def get_name(self) -> str:
+        return "Light Robe"
+
+
+class LeatherArmor(Armor):
+    """Skórzana zbroja - pancerz łucznika"""
+
+    def defense(self) -> int:
+        return 35
+
+    def get_name(self) -> str:
+        return "Leather Armor"
+
+
+# TODO: Zaimplementuj Abstract Factory Interface
+# Stwórz klasę EquipmentFactory(ABC) z abstrakcyjnymi metodami:
+# - create_weapon() -> Weapon
+# - create_armor() -> Armor
+
+class EquipmentFactory:
     pass
 
 
-class Staff:
-    pass
-
-
-class Bow:
-    pass
-
-
-# %% TODO: Implement Concrete Products - Armor
-
-class HeavyArmor:
-    pass
-
-
-class LightRobe:
-    pass
-
-
-class LeatherArmor:
-    pass
-
-
-# %% TODO: Implement Concrete Factories
+# TODO: Zaimplementuj Concrete Factories
+# Każda fabryka dziedziczy po EquipmentFactory
+# Implementuje create_weapon() i create_armor()
+# Gwarantuje spójność - zawsze zwraca pasujące produkty z jednej rodziny
 
 class WarriorEquipmentFactory:
     pass
@@ -166,39 +165,28 @@ class ArcherEquipmentFactory:
     pass
 
 
-# %% TODO: Implement Factory Method
-
-def get_equipment_factory(character_class: str) -> EquipmentFactory:
-    """
-    Factory Method zwracający odpowiednią fabrykę dla klasy postaci
-
-    Args:
-        character_class: "warrior", "mage", lub "archer"
-
-    Returns:
-        Instancja odpowiedniej fabryki
-
-    Raises:
-        ValueError: Gdy character_class jest nieznany
-    """
-    pass
-
-# %% Example Usage
-# Odkomentuj gdy zaimplementujesz
+# Przykład użycia - odkomentuj gdy zaimplementujesz:
 # if __name__ == "__main__":
-#     # Test different equipment sets
-#     classes = ["warrior", "mage", "archer"]
+#     print("=== WARRIOR EQUIPMENT ===")
+#     warrior_factory = WarriorEquipmentFactory()
+#     weapon = warrior_factory.create_weapon()
+#     armor = warrior_factory.create_armor()
+#     print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
+#     print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
 #
-#     for char_class in classes:
-#         print(f"\n=== {char_class.upper()} EQUIPMENT ===")
-#         factory = get_equipment_factory(char_class)
+#     print("\n=== MAGE EQUIPMENT ===")
+#     mage_factory = MageEquipmentFactory()
+#     weapon = mage_factory.create_weapon()
+#     armor = mage_factory.create_armor()
+#     print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
+#     print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
 #
-#         weapon = factory.create_weapon()
-#         armor = factory.create_armor()
+#     print("\n=== ARCHER EQUIPMENT ===")
+#     archer_factory = ArcherEquipmentFactory()
+#     weapon = archer_factory.create_weapon()
+#     armor = archer_factory.create_armor()
+#     print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
+#     print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
 #
-#         print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
-#         print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
-#
-#         # Test equipment synergy
-#         total_power = weapon.damage() + armor.defense()
-#         print(f"Total Power: {total_power}")
+#     print("\n✅ Gwarantowana spójność!")
+#     print("Niemożliwe stworzenie Sword + LightRobe przez fabrykę")

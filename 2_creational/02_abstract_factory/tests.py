@@ -4,7 +4,6 @@ Testy dla Abstract Factory Pattern - RPG Equipment
 
 import pytest
 from starter import (
-    get_equipment_factory,
     EquipmentFactory,
     Weapon,
     Armor,
@@ -14,39 +13,23 @@ from starter import (
 )
 
 
-class TestAbstractFactory:
-    """Testy wzorca Abstract Factory"""
+class TestFactoriesImplementInterface:
+    """Testy czy fabryki implementują interfejs EquipmentFactory"""
 
-    def test_warrior_factory_creation(self):
-        """Test tworzenia fabryki wojownika"""
-        factory = get_equipment_factory("warrior")
-        assert isinstance(factory, WarriorEquipmentFactory)
+    def test_warrior_factory_is_equipment_factory(self):
+        """Test czy WarriorEquipmentFactory dziedziczy po EquipmentFactory"""
+        factory = WarriorEquipmentFactory()
         assert isinstance(factory, EquipmentFactory)
 
-    def test_mage_factory_creation(self):
-        """Test tworzenia fabryki maga"""
-        factory = get_equipment_factory("mage")
-        assert isinstance(factory, MageEquipmentFactory)
+    def test_mage_factory_is_equipment_factory(self):
+        """Test czy MageEquipmentFactory dziedziczy po EquipmentFactory"""
+        factory = MageEquipmentFactory()
         assert isinstance(factory, EquipmentFactory)
 
-    def test_archer_factory_creation(self):
-        """Test tworzenia fabryki łucznika"""
-        factory = get_equipment_factory("archer")
-        assert isinstance(factory, ArcherEquipmentFactory)
+    def test_archer_factory_is_equipment_factory(self):
+        """Test czy ArcherEquipmentFactory dziedziczy po EquipmentFactory"""
+        factory = ArcherEquipmentFactory()
         assert isinstance(factory, EquipmentFactory)
-
-    def test_invalid_character_class(self):
-        """Test błędnej klasy postaci"""
-        with pytest.raises(ValueError):
-            get_equipment_factory("invalid_class")
-
-    def test_case_insensitive_factory_creation(self):
-        """Test czy factory działa z różnymi wielkościami liter"""
-        factory1 = get_equipment_factory("warrior")
-        factory2 = get_equipment_factory("WARRIOR")
-        factory3 = get_equipment_factory("Warrior")
-
-        assert type(factory1) == type(factory2) == type(factory3)
 
 
 class TestWarriorEquipment:
@@ -54,7 +37,7 @@ class TestWarriorEquipment:
 
     def test_warrior_weapon(self):
         """Test broni wojownika"""
-        factory = get_equipment_factory("warrior")
+        factory = WarriorEquipmentFactory()
         weapon = factory.create_weapon()
 
         assert isinstance(weapon, Weapon)
@@ -63,7 +46,7 @@ class TestWarriorEquipment:
 
     def test_warrior_armor(self):
         """Test pancerza wojownika"""
-        factory = get_equipment_factory("warrior")
+        factory = WarriorEquipmentFactory()
         armor = factory.create_armor()
 
         assert isinstance(armor, Armor)
@@ -76,7 +59,7 @@ class TestMageEquipment:
 
     def test_mage_weapon(self):
         """Test broni maga"""
-        factory = get_equipment_factory("mage")
+        factory = MageEquipmentFactory()
         weapon = factory.create_weapon()
 
         assert isinstance(weapon, Weapon)
@@ -85,7 +68,7 @@ class TestMageEquipment:
 
     def test_mage_armor(self):
         """Test pancerza maga"""
-        factory = get_equipment_factory("mage")
+        factory = MageEquipmentFactory()
         armor = factory.create_armor()
 
         assert isinstance(armor, Armor)
@@ -98,7 +81,7 @@ class TestArcherEquipment:
 
     def test_archer_weapon(self):
         """Test broni łucznika"""
-        factory = get_equipment_factory("archer")
+        factory = ArcherEquipmentFactory()
         weapon = factory.create_weapon()
 
         assert isinstance(weapon, Weapon)
@@ -107,7 +90,7 @@ class TestArcherEquipment:
 
     def test_archer_armor(self):
         """Test pancerza łucznika"""
-        factory = get_equipment_factory("archer")
+        factory = ArcherEquipmentFactory()
         armor = factory.create_armor()
 
         assert isinstance(armor, Armor)
@@ -116,22 +99,25 @@ class TestArcherEquipment:
 
 
 class TestEquipmentConsistency:
-    """Testy spójności ekwipunku"""
+    """Testy spójności ekwipunku - istota wzorca Abstract Factory"""
 
     def test_equipment_pairing(self):
-        """Test czy fabryki tworzą spójne zestawy"""
+        """
+        Test czy fabryki tworzą spójne zestawy
+        Istota wzorca: gwarancja spójności rodzin produktów
+        """
         # Warrior - high defense, high damage
-        warrior_factory = get_equipment_factory("warrior")
+        warrior_factory = WarriorEquipmentFactory()
         warrior_weapon = warrior_factory.create_weapon()
         warrior_armor = warrior_factory.create_armor()
 
         # Mage - low defense, medium damage
-        mage_factory = get_equipment_factory("mage")
+        mage_factory = MageEquipmentFactory()
         mage_weapon = mage_factory.create_weapon()
         mage_armor = mage_factory.create_armor()
 
         # Archer - medium defense, medium-high damage
-        archer_factory = get_equipment_factory("archer")
+        archer_factory = ArcherEquipmentFactory()
         archer_weapon = archer_factory.create_weapon()
         archer_armor = archer_factory.create_armor()
 
@@ -141,7 +127,7 @@ class TestEquipmentConsistency:
 
     def test_multiple_instances_different_objects(self):
         """Test czy każde wywołanie tworzy nowe obiekty"""
-        factory = get_equipment_factory("warrior")
+        factory = WarriorEquipmentFactory()
 
         weapon1 = factory.create_weapon()
         weapon2 = factory.create_weapon()
@@ -152,6 +138,24 @@ class TestEquipmentConsistency:
         # Powinny być różne instancje
         assert weapon1 is not weapon2
         assert armor1 is not armor2
+
+    def test_factory_guarantees_consistency(self):
+        """
+        Test istoty wzorca: niemożliwe stworzenie niespójnego zestawu
+
+        Bez wzorca można było: Sword + LightRobe (niespójne)
+        Z wzorcem: fabryka gwarantuje że zawsze dostaniemy spójny zestaw
+        """
+        warrior_factory = WarriorEquipmentFactory()
+
+        # Wywołujemy fabrykę 10 razy - zawsze spójny zestaw
+        for _ in range(10):
+            weapon = warrior_factory.create_weapon()
+            armor = warrior_factory.create_armor()
+
+            # Zawsze warrior weapon + warrior armor
+            assert weapon.damage() >= 80
+            assert armor.defense() >= 50
 
 
 if __name__ == "__main__":

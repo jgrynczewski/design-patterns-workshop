@@ -1,7 +1,6 @@
 # 🏭 Abstract Factory - Equipment Systems RPG
 
-**Difficulty**: medium \
-**Time**: 15 minutes \
+**Difficulty**: średni  
 **Focus**: Abstract Factory pattern + product families
 
 ## 🎯 Zadanie
@@ -21,7 +20,7 @@ Implementuj wzorzec Abstract Factory do tworzenia spójnych zestawów ekwipunku 
 3. Uruchom doctests: `python -m doctest starter.py -v`
 4. Zaimplementuj abstract factory interface
 5. Zaimplementuj concrete factories
-6. Uruchom testy: `python -m pytest test_abstract_factory.py -v`
+6. Uruchom testy: `python -m pytest tests.py -v`
 7. Commit gdy wszystkie testy przechodzą ✅
 
 ## 💡 Podpowiedź (Conceptual)
@@ -38,7 +37,6 @@ Implementuj wzorzec Abstract Factory do tworzenia spójnych zestawów ekwipunku 
 
 ## 2. Abstract Factory
 
-```markdown
 ## 🔄 Wzorzec w akcji
 
 ### ❌ Bez wzorca:

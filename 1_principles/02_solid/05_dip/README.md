@@ -1,6 +1,6 @@
 # 🔌 DIP - Abstrakcja Bazy Danych
 
-**Poziom**: łatwy
+**Poziom**: łatwy  
 **Cel**: Dependency Inversion Principle
 
 ## 🎯 Zadanie
@@ -15,7 +15,7 @@ Zaimplementuj system baz danych z abstrakcją: `Database` i konkretnymi klasami 
 1. Otwórz `starter.py`
 2. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+   - Pytest: `pytest tests.py -v`
 3. Zaimplementuj interfejs `Database` (ABC)
 4. Zaimplementuj `MySQLDatabase` i `PostgreSQLDatabase`
 5. Zaimplementuj `UserService` z dependency injection

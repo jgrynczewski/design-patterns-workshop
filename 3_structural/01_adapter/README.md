@@ -1,6 +1,6 @@
 # 🔌 Adapter - Payment Systems Integration
 
-**Poziom**: łatwy
+**Poziom**: średni  
 **Cel**: Adapter - konwersja niekompatybilnych interfejsów
 
 ## 🎯 Zadanie
@@ -23,23 +23,12 @@ Zaimplementuj wzorzec Adapter dla systemu płatności e-commerce. Trzy różne s
 2. Otwórz `starter.py`
 3. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest test_adapter.py -v`
+   - Pytest: `pytest tests.py -v`
 4. Zaimplementuj trzy adaptery:
-   - `PayPalAdapter` - konwertuje kwotę do centów, sprawdza `status_code`
-   - `StripeAdapter` - sprawdza pole `paid`
-   - `Przelewy24Adapter` - sprawdza pole `success`
-5. Każdy adapter:
-   - Dziedziczy z `PaymentProcessor`
+   - Każdy dziedziczy z `PaymentProcessor`
    - Zawiera instancję zewnętrznego serwisu (kompozycja)
-   - Konwertuje odpowiedź do standardowego formatu
-6. Uruchom testy ponownie (teraz powinny przejść)
-7. Gdy wszystkie testy przechodzą:
-   ```bash
-   git add .
-   git commit -m "Complete Adapter pattern"
-   git push
-   ```
-8. Sprawdź wynik w GitHub Actions
+   - Konwertuje parametry, wywołuje API, standaryzuje odpowiedź
+5. Uruchom testy ponownie (teraz powinny przejść)
 
 ## 💡 Adapter w pigułce
 
@@ -58,11 +47,11 @@ class PayPalAdapter(PaymentProcessor):
         self.paypal_service = paypal_service  # Kompozycja
 
     def process_payment(self, amount, currency):
-        # Konwersja: klient używa amount, PayPal wymaga centów
-        amount_cents = int(amount * 100)
-        response = self.paypal_service.make_payment(amount_cents, currency)
-        # Konwersja: PayPal zwraca status_code, klient oczekuje status
-        return {"status": "success" if response["status_code"] == 200 else "failed", ...}
+        # 1. Konwersja parametrów (amount → amount_cents)
+        # 2. Wywołanie API serwisu
+        response = self.paypal_service.make_payment(...)
+        # 3. Standaryzacja odpowiedzi (status_code → status)
+        return {"status": ..., "transaction_id": ...}
 ```
 
 Adapter **tłumaczy** między dwoma niekompatybilnymi interfejsami.
@@ -74,12 +63,11 @@ Adapter **tłumaczy** między dwoma niekompatybilnymi interfejsami.
 # Wszystkie systemy w jednym miejscu z if/elif
 def process_payment(provider, amount, currency):
     if provider == "paypal":
-        amount_cents = int(amount * 100)  # PayPal wymaga centów
-        response = paypal.make_payment(amount_cents, currency)
-        # Konwersja odpowiedzi PayPal...
+        # Konwersja dla PayPal...
+        response = paypal.make_payment(...)
     elif provider == "stripe":
-        response = stripe.charge(amount, currency)
-        # Konwersja odpowiedzi Stripe...
+        # Konwersja dla Stripe...
+        response = stripe.charge(...)
     elif provider == "przelewy24":
         # Dodanie nowego systemu = edycja tej funkcji
 ```
@@ -89,9 +77,8 @@ def process_payment(provider, amount, currency):
 # Każdy system w osobnym adapterze
 class PayPalAdapter(PaymentProcessor):
     def process_payment(self, amount, currency):
-        amount_cents = int(amount * 100)
-        response = self.paypal_service.make_payment(amount_cents, currency)
-        return {"status": ...}
+        # Konwersja + wywołanie + standaryzacja
+        ...
 
 # Klient używa tylko interfejsu
 processor = PayPalAdapter(PayPalService())  # lub StripeAdapter, Przelewy24Adapter

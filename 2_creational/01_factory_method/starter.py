@@ -31,22 +31,10 @@ Factory Method Pattern - RPG Weapons
 'Conan attacks with Sword for 50 damage!'
 """
 
-# %% About
-# - Name: Factory Method - RPG Weapons
-# - Focus: Factory Method pattern - subclasses decide what to create
-
-# %% Description
-"""
-Factory Method Pattern - RPG Weapons
-
-Wzorzec Factory Method deleguje tworzenie obiektów do podklas.
-Każda klasa postaci (Warrior, Mage, Archer) tworzy swoją unikalną broń.
-"""
-
 from abc import ABC, abstractmethod
 
 
-# %% STEP 1: Product Interface (Weapon) - GOTOWE
+# STEP 1: Product Interface (Weapon) - GOTOWE
 
 class Weapon(ABC):
     """Interfejs broni - używaj tego w swoim rozwiązaniu"""
@@ -60,7 +48,7 @@ class Weapon(ABC):
         pass
 
 
-# %% STEP 2: Concrete Products (Sword, Staff, Bow) - GOTOWE
+# STEP 2: Concrete Products (Sword, Staff, Bow) - GOTOWE
 
 class Sword(Weapon):
     """Miecz - broń wojownika"""
@@ -92,7 +80,7 @@ class Bow(Weapon):
         return 40
 
 
-# %% STEP 3: Creator (Character) - zawiera Factory Method
+# STEP 3: Creator (Character) - zawiera Factory Method
 
 # TODO: Zaimplementuj klasę Character (ABC)
 # Konstruktor przyjmuje name: str
@@ -105,7 +93,7 @@ class Character:
     pass
 
 
-# %% STEP 4: Concrete Creators (Warrior, Mage, Archer)
+# STEP 4: Concrete Creators (Warrior, Mage, Archer)
 
 # TODO: Zaimplementuj klasę Warrior
 # Dziedziczy po Character
@@ -131,15 +119,13 @@ class Archer:
     pass
 
 
-# %% Run
-# - Terminal: `python -m doctest -f -v starter.py`
-# - Tests: `python -m pytest test_factory.py -v`
-
-# %% Example
-# Odkomentuj gdy zaimplementujesz:
+# Przykład użycia - odkomentuj gdy zaimplementujesz:
 # if __name__ == "__main__":
 #     warrior = Warrior("Conan")
 #     print(warrior.attack())
 #
 #     mage = Mage("Gandalf")
 #     print(mage.attack())
+#
+#     archer = Archer("Legolas")
+#     print(archer.attack())

@@ -2,17 +2,48 @@
 
 Warsztat wzorców projektowych w Pythonie
 
-![Tests](https://github.com/YOUR-ORG/design-patterns-workshop/workflows/Design%20Patterns%20Labs/badge.svg)
-
 ## 📊 Postęp
 
+### 📚 Intro
 | Lab | Temat | Punkty |
 |-----|-------|--------|
-| 01 | Intro: Kalkulator | 10 |
-| 02 | GRASP: Low Coupling | 10 |
-| 03 | SOLID: OCP | 10 |
+| 01 | Hello World | 5 |
 
-**Razem: 0/30 pkt**
+### 🎯 Principles - GRASP
+| Lab | Temat | Punkty |
+|-----|-------|--------|
+| 02 | Low Coupling | 10 |
+
+### 🎯 Principles - SOLID
+| Lab | Temat | Punkty |
+|-----|-------|--------|
+| 03 | Open/Closed Principle | 10 |
+| 04 | Dependency Inversion | 10 |
+
+### 🏭 Creational Patterns
+| Lab | Temat | Punkty |
+|-----|-------|--------|
+| 05 | Factory Method | 15 |
+| 06 | Abstract Factory | 15 |
+| 07 | Builder | 15 |
+| 08 | Singleton | 15 |
+
+### 🏗️ Structural Patterns
+| Lab | Temat | Punkty |
+|-----|-------|--------|
+| 09 | Adapter | 15 |
+| 10 | Decorator | 15 |
+| 11 | Facade | 15 |
+
+### 🎭 Behavioral Patterns
+| Lab | Temat | Punkty |
+|-----|-------|--------|
+| 12 | Strategy | 15 |
+| 13 | Template Method | 15 |
+| 14 | Flyweight | 15 |
+| 15 | Iterator | 15 |
+
+**Razem: 0/200 pkt**
 
 ---
 
@@ -29,17 +60,9 @@ pip install -r requirements.txt
 ## 🧪 Testowanie
 
 ```bash
-# Lab 01 - Intro
+# Lab 01 - Intro: Hello World
 cd 0_intro/01_hello
-pytest -v
-
-# Lab 02 - GRASP Low Coupling
-cd 1_principles/01_grasp/04_low_coupling
-pytest -v
-
-# Lab 03 - SOLID OCP
-cd 1_principles/02_solid/02_ocp
-pytest -v
+pytest tests.py -v
 ```
 
 ---
@@ -47,7 +70,7 @@ pytest -v
 ## ✅ Workflow
 
 1. Edytuj `starter.py` w folderze laba
-2. Uruchom testy: `pytest -v`
+2. Uruchom testy: `pytest tests.py -v`
 3. Commit & push gdy testy przejdą
 4. Sprawdź wyniki w GitHub Actions
 
@@ -55,11 +78,12 @@ pytest -v
 
 ## 📁 Struktura laba
 
-- `README.md` - Polecenie
-- `starter.py` - Tu piszesz kod
-- `test_*.py` - Testy (nie edytuj)
-- `solution.py` - Rozwiązanie (sprawdź po zrobieniu)
-- `violation.py` - Antyprzykład
+- `README.md` - Polecenie i teoria
+- `starter.py` - **Tu piszesz kod** (wypełnij luki)
+- `tests.py` - Testy (nie edytuj)
+- `violation.py`/`problem.py` - Kod bez wzorca (antyprzykład)
+
+**Rozwiązania:** Sprawdź gałąź `solutions` po skończeniu laba
 
 ---
 
@@ -67,5 +91,6 @@ pytest -v
 
 - Jeden lab na raz
 - Czytaj `README.md` w folderze laba
-- Sprawdzaj `violation.py` (czego NIE robić)
-- Testuj często
+- Sprawdzaj `violation.py`/`problem.py` (kod bez wzorca - czego NIE robić)
+- Testuj często (`pytest tests.py -v`)
+- Utknąłeś? Sprawdź gałąź `solutions`

@@ -1,5 +1,6 @@
 """
-❌ PROBLEM: Tworzenie obiektów z funkcją fabryczną
+❌ PROBLEM: Tworzenie obiektów z funkcją fabryczną (tak czasami nazywa się to rozwiązanie - metoda fabryczne,
+które nie jest metodą fabryczną, ale często jest mylone z metodą fabryczną)
 
 Rozwiązanie bez wzorca (funkcja fabryczna):
 - Centralna funkcja create_weapon() z if/elif dla każdego typu

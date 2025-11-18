@@ -1,6 +1,6 @@
 # 🎯 Strategy - Task Processing Strategies
 
-**Poziom**: łatwy
+**Poziom**: Średni  
 **Cel**: Strategy - wymienne algorytmy przetwarzania
 
 ## 🎯 Zadanie
@@ -19,7 +19,7 @@ Zaimplementuj wzorzec Strategy dla systemu przetwarzania zadań. Trzy różne st
 1. Otwórz `starter.py`
 2. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+   - Pytest: `pytest tests.py -v`
 3. Klasy pomocnicze (`TaskPriority`, `WorkflowTask`) i interfejs `TaskProcessor` są już gotowe
 4. Zaimplementuj trzy konkretne strategie:
    - `UrgentTaskProcessor` - walidacja: priority == URGENT
@@ -51,7 +51,7 @@ Zaimplementuj wzorzec Strategy dla systemu przetwarzania zadań. Trzy różne st
 ### Kluczowy moment:
 ```python
 def execute_task(self, task: WorkflowTask) -> Dict[str, Any]:
-    # Context deleguje do strategii
+    # Delegacja do aktualnej strategii
     return self.strategy.process_task(task)
 ```
 

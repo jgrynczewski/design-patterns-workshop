@@ -1,6 +1,6 @@
 # 🏭 Factory Method - Bronie RPG
 
-**Poziom**: łatwy
+**Poziom**: średni  
 **Cel**: Factory Method - podklasy decydują co stworzyć
 
 ## 🎯 Zadanie
@@ -16,7 +16,7 @@ Zaimplementuj wzorzec Factory Method dla systemu broni w grze RPG. Każda posta�
 1. Otwórz `starter.py`
 2. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+   - Pytest: `pytest tests.py -v`
 3. Klasy broni (`Sword`, `Staff`, `Bow`) są już gotowe (STEP 1-2)
 4. Zaimplementuj klasę `Character` (STEP 3)
    - Klasa abstrakcyjna z konstruktorem przyjmującym `name: str`
@@ -40,7 +40,7 @@ Zaimplementuj wzorzec Factory Method dla systemu broni w grze RPG. Każda posta�
 
 ### Jak to działa:
 1. Klasa bazowa (`Character`) definiuje abstrakcyjną metodę `create_weapon()`
-2. Podklasy (`Warrior`, `Mage`, `Archer`) nadpisują tę metodę
+2. Podklasy (`Warrior`, `Mage`, `Archer`) implementują tę metodę
 3. Każda podklasa decyduje co stworzyć (Sword, Staff, Bow)
 
 ### Kluczowy moment:
@@ -63,7 +63,10 @@ def create_weapon(character_type):
         return Sword()
     elif character_type == "mage":
         return Staff()
+    
     # Nowa postać = edycja if/elif ❌
+    elif character_type == "paladin":
+        return Mace()
 ```
 
 ### ✅ Z wzorcem (Factory Method):
