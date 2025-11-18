@@ -75,26 +75,73 @@ class TV:
         return "TV turned OFF"
 
 
-# Facade - DO IMPLEMENTACJI
+# Facade - ROZWIĄZANIE
 # WZORZEC: Facade (fasada upraszczająca interfejs do podsystemów)
 
-# TODO: Zaimplementuj SmartHomeFacade
-# Konstruktor tworzy wszystkie podsystemy (kompozycja)
-# Metoda evening_mode() - koordynuje podsystemy (patrz sekwencja w problem.py)
-# Metoda leaving_home() - koordynuje podsystemy (patrz sekwencja w problem.py)
-
 class SmartHomeFacade:
-    pass
+    """
+    Fasada dla systemu inteligentnego domu
+
+    Upraszcza interfejs do wielu podsystemów poprzez wystawienie
+    metod wysokiego poziomu (evening_mode, leaving_home).
+    Klient nie musi znać szczegółów Light, Thermostat, SecuritySystem, TV.
+    """
+
+    def __init__(self):
+        """
+        Konstruktor tworzy wszystkie podsystemy
+
+        Facade jest odpowiedzialna za tworzenie i zarządzanie
+        wszystkimi podsystemami - klient ich nie widzi.
+        """
+        self.light = Light()
+        self.thermostat = Thermostat()
+        self.security = SecuritySystem()
+        self.tv = TV()
+
+    def evening_mode(self) -> str:
+        """
+        Tryb wieczorny - koordynuje wszystkie podsystemy
+
+        Jedna metoda zamiast czterech wywołań.
+        Facade wie jaka sekwencja jest potrzebna.
+
+        Returns:
+            Połączone wyniki z wszystkich podsystemów
+        """
+        result = ""
+        result += self.light.dim(50) + "\n"
+        result += self.thermostat.set_temperature(22) + "\n"
+        result += self.security.disarm() + "\n"
+        result += self.tv.turn_on()
+        return result
+
+    def leaving_home(self) -> str:
+        """
+        Wychodzenie z domu - koordynuje wszystkie podsystemy
+
+        Jedna metoda zamiast czterech wywołań.
+        Facade wie jaka sekwencja jest potrzebna.
+
+        Returns:
+            Połączone wyniki z wszystkich podsystemów
+        """
+        result = ""
+        result += self.light.turn_off() + "\n"
+        result += self.thermostat.set_temperature(18) + "\n"
+        result += self.security.arm() + "\n"
+        result += self.tv.turn_off()
+        return result
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     # Tworzenie fasady
-#     home = SmartHomeFacade()
-#
-#     # Tryb wieczorny - jedno wywołanie zamiast czterech
-#     print("=== Evening Mode ===")
-#     print(home.evening_mode())
-#
-#     print("\n=== Leaving Home ===")
-#     print(home.leaving_home())
+# Przykład użycia
+if __name__ == "__main__":
+    # Tworzenie fasady
+    home = SmartHomeFacade()
+
+    # Tryb wieczorny - jedno wywołanie zamiast czterech
+    print("=== Evening Mode ===")
+    print(home.evening_mode())
+
+    print("\n=== Leaving Home ===")
+    print(home.leaving_home())

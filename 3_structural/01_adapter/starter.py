@@ -108,8 +108,22 @@ class PaymentProcessor(ABC):
 #   - Wywołuje paypal_service.make_payment()
 #   - Standaryzuje odpowiedź ({"status": ..., "transaction_id": ...})
 
-class PayPalAdapter:
-    pass
+class PayPalAdapter(PaymentProcessor):
+    def __init__(self, paypal_service: PayPalService):
+        self.paypal_service = paypal_service
+
+    def process_payment(self, amount: float, currency: str) -> dict:
+        # Konwersja parametrów - PayPal wymaga kwoty w centach
+        amount_cents = int(amount * 100)
+
+        # Wywołanie API zewnętrznego serwisu
+        response = self.paypal_service.make_payment(amount_cents, currency)
+
+        # Standaryzacja odpowiedzi do wspólnego formatu
+        if response["status_code"] == 200:
+            return {"status": "success", "transaction_id": response["payment_id"]}
+        else:
+            return {"status": "failed", "transaction_id": None}
 
 
 # TODO: Zaimplementuj StripeAdapter
@@ -119,8 +133,19 @@ class PayPalAdapter:
 #   - Wywołuje stripe_service.charge()
 #   - Standaryzuje odpowiedź ({"status": ..., "transaction_id": ...})
 
-class StripeAdapter:
-    pass
+class StripeAdapter(PaymentProcessor):
+    def __init__(self, stripe_service: StripeService):
+        self.stripe_service = stripe_service
+
+    def process_payment(self, amount: float, currency: str) -> dict:
+        # Wywołanie API zewnętrznego serwisu
+        response = self.stripe_service.charge(amount, currency)
+
+        # Standaryzacja odpowiedzi do wspólnego formatu
+        if response["paid"]:
+            return {"status": "success", "transaction_id": response["id"]}
+        else:
+            return {"status": "failed", "transaction_id": None}
 
 
 # TODO: Zaimplementuj Przelewy24Adapter
@@ -130,18 +155,29 @@ class StripeAdapter:
 #   - Wywołuje p24_service.create_transaction()
 #   - Standaryzuje odpowiedź ({"status": ..., "transaction_id": ...})
 
-class Przelewy24Adapter:
-    pass
+class Przelewy24Adapter(PaymentProcessor):
+    def __init__(self, p24_service: Przelewy24Service):
+        self.p24_service = p24_service
+
+    def process_payment(self, amount: float, currency: str) -> dict:
+        # Wywołanie API zewnętrznego serwisu
+        response = self.p24_service.create_transaction(amount, currency)
+
+        # Standaryzacja odpowiedzi do wspólnego formatu
+        if response["success"]:
+            return {"status": "success", "transaction_id": str(response["transactionId"])}
+        else:
+            return {"status": "failed", "transaction_id": None}
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     # Klient używa tylko interfejsu PaymentProcessor
-#     paypal = PayPalAdapter(PayPalService())
-#     stripe = StripeAdapter(StripeService())
-#     p24 = Przelewy24Adapter(Przelewy24Service())
-#
-#     # Ten sam interfejs dla wszystkich!
-#     print(paypal.process_payment(100.50, "USD"))
-#     print(stripe.process_payment(50.00, "EUR"))
-#     print(p24.process_payment(200.00, "PLN"))
+# Przykład użycia
+if __name__ == "__main__":
+    # Klient używa tylko interfejsu PaymentProcessor
+    paypal = PayPalAdapter(PayPalService())
+    stripe = StripeAdapter(StripeService())
+    p24 = Przelewy24Adapter(Przelewy24Service())
+
+    # Ten sam interfejs dla wszystkich!
+    print(paypal.process_payment(100.50, "USD"))
+    print(stripe.process_payment(50.00, "EUR"))
+    print(p24.process_payment(200.00, "PLN"))

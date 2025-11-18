@@ -28,7 +28,13 @@ class Database:
 # Metoda save_score(player, score) zwraca: "Saved score {score} for {player}"
 
 class ScoreService:
-    pass
+    def __init__(self):
+        self.database = Database()
+
+    def save_score(self, player: str, score: int) -> str:
+        """Pośrednik - izoluje Game od Database"""
+        self.database.connect()
+        return self.database.save(player, score)
 
 
 # TODO: Zaimplementuj Game
@@ -40,7 +46,14 @@ class ScoreService:
 # Low Coupling: Game nie zna Database, tylko ScoreService (pośrednik)
 
 class Game:
-    pass
+    def __init__(self, score_service: ScoreService):
+        """Dependency Injection - redukuje sprzężenie"""
+        self.score_service = score_service
+
+    def finish_game(self, player: str, score: int) -> str:
+        """Game używa tylko ScoreService, nie zna Database"""
+        result = self.score_service.save_score(player, score)
+        return f"Game finished. {result}"
 
 
 # GRASP Low Coupling:
@@ -55,8 +68,8 @@ class Game:
 # Korzyść: Zmiana Database nie wpływa na Game
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     service = ScoreService()
-#     game = Game(service)
-#     print(game.finish_game("Alice", 150))
+# Przykład użycia
+if __name__ == "__main__":
+    service = ScoreService()
+    game = Game(service)
+    print(game.finish_game("Alice", 150))

@@ -33,11 +33,18 @@ True
 from abc import ABC, abstractmethod
 
 
-# Document Generator - CZĘŚCIOWO GOTOWE
+# Document Generator - ROZWIĄZANIE
 # WZORZEC: Base class z template method
 
 class DocumentGenerator(ABC):
-    """Bazowa klasa dla generatorów dokumentów"""
+    """
+    Bazowa klasa dla generatorów dokumentów
+
+    KLUCZOWE dla wzorca Template Method:
+    1. TEMPLATE METHOD: generate_document() definiuje szkielet (NIE jest abstract)
+    2. PRIMITIVE OPERATIONS: create_header/body/footer (SĄ abstract)
+    3. HOOK METHOD: add_signature() (ma domyślną implementację)
+    """
 
     def __init__(self, title: str):
         self.title = title
@@ -49,14 +56,21 @@ class DocumentGenerator(ABC):
         KLUCZOWE: Ta metoda NIE jest abstrakcyjna - definiuje flow
         Subklasy NIE nadpisują tej metody, tylko implementują kroki
         """
-        # TODO: Zaimplementuj szkielet algorytmu:
-        # 1. header = self.create_header()
-        # 2. body = self.create_body()
-        # 3. signature = self.add_signature()  # Hook method
-        # 4. footer = self.create_footer()
-        # 5. Połącz wszystko w result (z "\n\n" między sekcjami)
-        # 6. return result
-        pass
+        # Szkielet algorytmu - zawsze te same kroki w tej samej kolejności
+        header = self.create_header()  # Primitive operation
+        body = self.create_body()  # Primitive operation
+        signature = self.add_signature()  # Hook method (opcjonalny)
+        footer = self.create_footer()  # Primitive operation
+
+        # Składanie dokumentu
+        result = header + "\n\n" + body
+
+        if signature:  # Dodaj signature tylko jeśli nie jest pusty
+            result += "\n\n" + signature
+
+        result += "\n\n" + footer
+
+        return result
 
     @abstractmethod
     def create_header(self) -> str:
@@ -83,35 +97,94 @@ class DocumentGenerator(ABC):
         return ""  # Domyślnie brak podpisu
 
 
-# Concrete Generators - DO IMPLEMENTACJI
+# Concrete Generators - ROZWIĄZANIE
 # WZORZEC: Konkretne implementacje primitive operations
 
-# TODO: Zaimplementuj ReportDocument
-# Dziedziczy po DocumentGenerator
-# Implementuje create_header(), create_body(), create_footer()
-# Może nadpisać add_signature() jeśli chce (hook method)
+class ReportDocument(DocumentGenerator):
+    """
+    Generator raportów
 
-class ReportDocument:
-    pass
+    Implementuje tylko primitive operations (3 metody abstrakcyjne)
+    Używa domyślnej implementacji hook method (add_signature)
+    """
+
+    def create_header(self) -> str:
+        """Implementacja primitive operation - nagłówek raportu"""
+        return (
+            "=" * 50 + "\n"
+            f"REPORT: {self.title}\n" +
+            "=" * 50
+        )
+
+    def create_body(self) -> str:
+        """Implementacja primitive operation - treść raportu"""
+        return (
+            "This is the main body of the report.\n"
+            f"Report details for: {self.title}"
+        )
+
+    def create_footer(self) -> str:
+        """Implementacja primitive operation - stopka raportu"""
+        return (
+            "-" * 50 + "\n"
+            "End of Report\n" +
+            "-" * 50
+        )
+
+    # NIE nadpisuje add_signature() - używa domyślnej (pusty string)
 
 
-# TODO: Zaimplementuj EmailDocument
-# Dziedziczy po DocumentGenerator
-# Implementuje create_header(), create_body(), create_footer()
-# NADPISUJE add_signature() - zwraca "Best regards,\nThe Team"
+class EmailDocument(DocumentGenerator):
+    """
+    Generator emaili
 
-class EmailDocument:
-    pass
+    Implementuje primitive operations (3 metody abstrakcyjne)
+    NADPISUJE hook method (add_signature) - dodaje podpis
+    """
+
+    def create_header(self) -> str:
+        """Implementacja primitive operation - nagłówek emaila"""
+        return (
+            "From: system@example.com\n"
+            f"Subject: {self.title}\n" +
+            "=" * 40
+        )
+
+    def create_body(self) -> str:
+        """Implementacja primitive operation - treść emaila"""
+        return (
+            "Dear User,\n\n"
+            f"This email is regarding: {self.title}"
+        )
+
+    def create_footer(self) -> str:
+        """Implementacja primitive operation - stopka emaila"""
+        return (
+            "-" * 40 + "\n"
+            "This is an automated email.\n" +
+            "-" * 40
+        )
+
+    def add_signature(self) -> str:
+        """
+        NADPISANIE hook method - email ma podpis
+
+        KLUCZOWE: Hook method może być nadpisany jeśli potrzeba
+        """
+        return "Best regards,\nThe Team"
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     print("=== REPORT DOCUMENT ===")
-#     report = ReportDocument("Q4 Sales Report")
-#     print(report.generate_document())
-#
-#     print("\n" + "=" * 60 + "\n")
-#
-#     print("=== EMAIL DOCUMENT ===")
-#     email = EmailDocument("Meeting Reminder")
-#     print(email.generate_document())
+# Przykład użycia
+if __name__ == "__main__":
+    print("=== REPORT DOCUMENT ===")
+    report = ReportDocument("Q4 Sales Report")
+    print(report.generate_document())
+
+    print("\n" + "=" * 60 + "\n")
+
+    print("=== EMAIL DOCUMENT ===")
+    email = EmailDocument("Meeting Reminder")
+    print(email.generate_document())
+
+    # KLUCZOWE: Wszyscy używają tego samego flow (generate_document)
+    # ale każdy ma własne szczegóły implementacji kroków

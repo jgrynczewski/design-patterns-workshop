@@ -1,6 +1,6 @@
 # 🎯 Singleton - Config Manager
 
-**Poziom**: łatwy
+**Poziom**: łatwy  
 **Cel**: Singleton - jedna globalna instancja
 
 ## 🎯 Zadanie
@@ -21,7 +21,7 @@ Zaimplementuj wzorzec Singleton dla systemu zarządzania konfiguracją gry. `Con
 2. Otwórz `starter.py`
 3. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest test_basic.py -v`
+   - Pytest: `pytest tests.py -v`
 4. Zaimplementuj wzorzec Singleton w `ConfigManager`:
    - Zmienna klasowa `_instance` przechowuje jedyną instancję
    - Metoda `__new__` kontroluje tworzenie - zwraca `_instance` jeśli istnieje

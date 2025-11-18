@@ -1,7 +1,6 @@
 # 🎁 Decorator - Discount System
 
-**Difficulty**: medium \
-**Time**: 15 minutes \
+**Difficulty**: medium  
 **Focus**: Decorator pattern - adding behavior dynamically
 
 ## 🎯 Zadanie
@@ -21,7 +20,7 @@ Implementuj system rabatów i promocji używając wzorca Decorator, gdzie można
 2. Uruchom doctests: `python -m doctest starter.py -v`
 3. Zaimplementuj Product interface i BaseProduct
 4. Zaimplementuj DiscountDecorator i konkretne dekoratory
-5. Uruchom testy: `python -m pytest test_decorator.py -v`
+5. Uruchom testy: `python -m pytest tests.py -v`
 6. Commit gdy wszystkie testy przechodzą ✅
 
 ## 💡 Podpowiedź

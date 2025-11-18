@@ -1,7 +1,6 @@
 # 🏗️ Builder - Character Creator RPG
 
-**Difficulty**: medium \
-**Time**: 15 minutes \
+**Difficulty**: medium  
 **Focus**: Builder pattern + fluent interface
 
 ## 🎯 Zadanie
@@ -19,7 +18,7 @@ Implementuj wzorzec Builder do tworzenia złożonych postaci RPG z różnymi atr
 1. Otwórz `starter.py`
 2. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+   - Pytest: `pytest tests.py -v`
 3. Klasa `Character` jest już gotowa
 4. Zaimplementuj `CharacterBuilder` z fluent interface (method chaining)
 5. Uruchom testy ponownie (teraz powinny przejść)

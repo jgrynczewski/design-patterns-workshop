@@ -21,12 +21,17 @@ Open/Closed Principle - Shape Calculator
 100.5
 """
 
+from abc import ABC, abstractmethod
+
 
 # TODO: Zaimplementuj interfejs Shape
 # Klasa abstrakcyjna z metodą calculate_area()
 
-class Shape:
-    pass
+class Shape(ABC):
+    @abstractmethod
+    def calculate_area(self):
+        """Metoda abstrakcyjna - każdy kształt musi ją zaimplementować"""
+        pass
 
 
 # TODO: Zaimplementuj Circle
@@ -34,8 +39,12 @@ class Shape:
 # Dziedziczy po Shape
 # Pole = π * r²  (użyj 3.14 dla π)
 
-class Circle:
-    pass
+class Circle(Shape):
+    def __init__(self, radius: float):
+        self.radius = radius
+
+    def calculate_area(self) -> float:
+        return 3.14 * self.radius ** 2
 
 
 # TODO: Zaimplementuj Square
@@ -43,8 +52,12 @@ class Circle:
 # Dziedziczy po Shape
 # Pole = side²
 
-class Square:
-    pass
+class Square(Shape):
+    def __init__(self, side: float):
+        self.side = side
+
+    def calculate_area(self) -> float:
+        return self.side ** 2
 
 
 # TODO: Zaimplementuj Triangle
@@ -52,8 +65,13 @@ class Square:
 # Dziedziczy po Shape
 # Pole = (base * height) / 2
 
-class Triangle:
-    pass
+class Triangle(Shape):
+    def __init__(self, base: float, height: float):
+        self.base = base
+        self.height = height
+
+    def calculate_area(self) -> float:
+        return (self.base * self.height) / 2
 
 
 # TODO: Zaimplementuj AreaCalculator
@@ -61,15 +79,17 @@ class Triangle:
 # i zwraca sumę ich pól używając polimorfizmu
 
 class AreaCalculator:
-    pass
+    def total_area(self, shapes: list) -> float:
+        """Polimorfizm - każdy kształt wie jak obliczyć swoje pole"""
+        return sum(shape.calculate_area() for shape in shapes)
 
 
 # OCP: Open for extension, Closed for modification
 # Nowy kształt = nowa klasa Shape, zero zmian w AreaCalculator
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     shapes = [Circle(5), Square(4), Triangle(3, 4)]
-#     calculator = AreaCalculator()
-#     print(f"Total area: {calculator.total_area(shapes)}")
+# Przykład użycia
+if __name__ == "__main__":
+    shapes = [Circle(5), Square(4), Triangle(3, 4)]
+    calculator = AreaCalculator()
+    print(f"Total area: {calculator.total_area(shapes)}")

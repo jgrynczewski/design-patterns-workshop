@@ -1,7 +1,6 @@
 # 📚 Iterator - Book Collection
 
-**Poziom**: Średni
-**Czas**: 15 minut
+**Poziom**: Średni  
 **Cel**: Iterator - sekwencyjny dostęp do elementów kolekcji bez ujawniania struktury
 
 ## 🎯 Zadanie
@@ -23,7 +22,7 @@ Zaimplementuj wzorzec Iterator dla kolekcji książek. Iterator enkapsuluje spos
 2. Otwórz `starter.py`
 3. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+   - Pytest: `pytest tests.py -v`
 4. Klasy `Book` i `Iterator` są już gotowe
 5. Zaimplementuj:
    - `BookIterator` - konkretny iterator

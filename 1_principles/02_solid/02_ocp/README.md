@@ -15,7 +15,7 @@ Zaimplementuj rodzinę kształtów: `Circle`, `Square`, `Triangle`.
 1. Otwórz `starter.py`
 2. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+   - Pytest: `pytest tests.py -v`
 3. Zaimplementuj klasy `Circle`, `Square`, `Triangle`
 4. Uruchom testy ponownie (teraz powinny przejść)
 5. Gdy wszystkie testy przechodzą:

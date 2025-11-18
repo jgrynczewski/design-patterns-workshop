@@ -1,7 +1,6 @@
 # 🪶 Flyweight - Product Data Optimization
 
-**Poziom**: Średni
-**Czas**: 20 minut
+**Poziom**: Średni  
 **Cel**: Flyweight - optymalizacja pamięci przez współdzielenie powtarzających się danych
 
 ## 🎯 Zadanie
@@ -23,7 +22,7 @@ Zaimplementuj wzorzec Flyweight dla produktów e-commerce. Oddziel dane współd
 2. Otwórz `starter.py`
 3. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v`)
+   - Pytest: `pytest tests.py -v`
 4. Zaimplementuj:
    - `ProductType` - flyweight z intrinsic state
    - `ProductTypeFactory` - pula flyweights (sprawdź czy istnieje, zwróć lub stwórz)

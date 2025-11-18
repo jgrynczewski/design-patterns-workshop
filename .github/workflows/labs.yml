@@ -26,7 +26,7 @@ jobs:
       - name: Run tests
         run: |
           cd 0_intro/01_hello
-          pytest test_hello.py -v --tb=short
+          pytest tests.py -v --tb=short
 
   # ============================================
   # PRINCIPLES - GRASP
@@ -154,7 +154,7 @@ jobs:
       - name: Run tests
         run: |
           cd 2_creational/05_singleton
-          pytest test_basic.py -v --tb=short
+          pytest tests.py -v --tb=short
 
   # ============================================
   # STRUCTURAL PATTERNS

@@ -68,66 +68,118 @@ class Character:
         }
 
 
-# Builder - DO IMPLEMENTACJI
+# Builder - ROZWIĄZANIE
 # WZORZEC: Fluent interface (method chaining) + stopniowe budowanie
 
-# TODO: Zaimplementuj CharacterBuilder
-# KLUCZOWE dla wzorca Builder:
-# 1. FLUENT INTERFACE: każda metoda zwraca self (dla method chaining)
-# 2. STOPNIOWE BUDOWANIE: budowanie obiektu krok po kroku
-# 3. WALIDACJA: sprawdź wymagane pola w build() przed zwróceniem
-# 4. RESET: możliwość resetowania buildera do ponownego użycia
-#
-# Metody do zaimplementowania:
-# - __init__() - inicjalizuj poprzez wywołanie reset()
-# - reset() - stwórz nową instancję Character (self.character = Character()), zwróć self
-# - set_name(name) - ustaw self.character.name, zwróć self
-# - set_class(character_class) - ustaw self.character.character_class, zwróć self
-# - set_level(level) - ustaw self.character.level, zwróć self
-# - set_stat(stat_name, value) - ustaw self.character.stats[stat_name], zwróć self
-# - add_skill(skill) - dodaj do self.character.skills, zwróć self
-# - add_equipment(item) - dodaj do self.character.equipment, zwróć self
-# - build() - sprawdź czy name i class są ustawione, jeśli nie - raise ValueError, zwróć self.character
-
 class CharacterBuilder:
-    pass
+    """
+    Builder do tworzenia postaci RPG z fluent interface
+
+    KLUCZOWE dla wzorca Builder:
+    1. FLUENT INTERFACE: każda metoda zwraca self
+    2. STOPNIOWE BUDOWANIE: obiekt budowany krok po kroku
+    3. WALIDACJA: sprawdzenie wymaganych pól przed build()
+    4. RESET: możliwość ponownego użycia buildera
+    """
+
+    def __init__(self):
+        """Inicjalizuj builder poprzez reset"""
+        self.reset()
+
+    def reset(self) -> 'CharacterBuilder':
+        """
+        Resetuje builder do stanu początkowego
+
+        Returns:
+            self dla method chaining
+        """
+        self.character = Character()
+        return self  # FLUENT INTERFACE
+
+    def set_name(self, name: str) -> 'CharacterBuilder':
+        """Ustawia imię postaci"""
+        self.character.name = name
+        return self  # FLUENT INTERFACE
+
+    def set_class(self, character_class: str) -> 'CharacterBuilder':
+        """Ustawia klasę postaci"""
+        self.character.character_class = character_class
+        return self  # FLUENT INTERFACE
+
+    def set_level(self, level: int) -> 'CharacterBuilder':
+        """Ustawia poziom postaci"""
+        self.character.level = level
+        return self  # FLUENT INTERFACE
+
+    def set_stat(self, stat_name: str, value: int) -> 'CharacterBuilder':
+        """Ustawia statystykę postaci"""
+        self.character.stats[stat_name] = value
+        return self  # FLUENT INTERFACE
+
+    def add_skill(self, skill: str) -> 'CharacterBuilder':
+        """Dodaje umiejętność do postaci"""
+        self.character.skills.append(skill)
+        return self  # FLUENT INTERFACE
+
+    def add_equipment(self, item: str) -> 'CharacterBuilder':
+        """Dodaje przedmiot do ekwipunku"""
+        self.character.equipment.append(item)
+        return self  # FLUENT INTERFACE
+
+    def build(self) -> Character:
+        """
+        Buduje i zwraca gotową postać
+
+        Returns:
+            Zbudowana postać
+
+        Raises:
+            ValueError: Gdy brakuje wymaganych pól (name, class)
+        """
+        # WALIDACJA - sprawdź wymagane pola
+        if not self.character.name:
+            raise ValueError("Character name is required")
+        if not self.character.character_class:
+            raise ValueError("Character class is required")
+
+        return self.character
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     # Tworzenie postaci krok po kroku z fluent interface
-#     builder = CharacterBuilder()
-#
-#     # Wojownik
-#     warrior = (builder
-#                .set_name("Conan")
-#                .set_class("warrior")
-#                .set_level(15)
-#                .set_stat("strength", 85)
-#                .set_stat("constitution", 80)
-#                .add_skill("sword mastery")
-#                .add_skill("shield bash")
-#                .add_equipment("steel sword")
-#                .add_equipment("iron shield")
-#                .build())
-#     print(f"Created: {warrior}")
-#     print(f"Stats: {warrior.stats}")
-#     print(f"Skills: {warrior.skills}")
-#
-#     # Reset i nowa postać
-#     mage = (builder
-#             .reset()
-#             .set_name("Gandalf")
-#             .set_class("mage")
-#             .set_level(50)
-#             .set_stat("intelligence", 95)
-#             .set_stat("wisdom", 90)
-#             .add_skill("fireball")
-#             .add_skill("teleport")
-#             .add_skill("heal")
-#             .add_equipment("staff of power")
-#             .add_equipment("robe of the archmagi")
-#             .build())
-#     print(f"\nCreated: {mage}")
-#     print(f"Stats: {mage.stats}")
-#     print(f"Skills: {mage.skills}")
+# Przykład użycia
+if __name__ == "__main__":
+    # Tworzenie postaci krok po kroku z fluent interface
+    builder = CharacterBuilder()
+
+    # Wojownik
+    warrior = (builder
+               .set_name("Conan")
+               .set_class("warrior")
+               .set_level(15)
+               .set_stat("strength", 85)
+               .set_stat("constitution", 80)
+               .add_skill("sword mastery")
+               .add_skill("shield bash")
+               .add_equipment("steel sword")
+               .add_equipment("iron shield")
+               .build())
+    print(f"Created: {warrior}")
+    print(f"Stats: {warrior.stats}")
+    print(f"Skills: {warrior.skills}")
+
+    # Reset i nowa postać
+    mage = (builder
+            .reset()
+            .set_name("Gandalf")
+            .set_class("mage")
+            .set_level(50)
+            .set_stat("intelligence", 95)
+            .set_stat("wisdom", 90)
+            .add_skill("fireball")
+            .add_skill("teleport")
+            .add_skill("heal")
+            .add_equipment("staff of power")
+            .add_equipment("robe of the archmagi")
+            .build())
+    print(f"\nCreated: {mage}")
+    print(f"Stats: {mage.stats}")
+    print(f"Skills: {mage.skills}")

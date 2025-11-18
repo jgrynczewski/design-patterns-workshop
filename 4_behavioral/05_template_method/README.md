@@ -1,7 +1,6 @@
 # 📄 Template Method - Document Generation
 
-**Poziom**: Łatwy
-**Czas**: 15 minut
+**Poziom**: Łatwy  
 **Cel**: Template Method - szkielet algorytmu z customizowalnymi krokami
 
 ## 🎯 Zadanie
@@ -24,7 +23,7 @@ Zaimplementuj wzorzec Template Method dla generatorów dokumentów. Template met
 2. Otwórz `starter.py`
 3. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v`)
+   - Pytest: `pytest tests.py -v`
 4. Klasa `DocumentGenerator` jest częściowo gotowa
 5. Zaimplementuj:
    - `generate_document()` - template method (szkielet algorytmu)

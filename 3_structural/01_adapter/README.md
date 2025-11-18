@@ -1,6 +1,6 @@
 # 🔌 Adapter - Payment Systems Integration
 
-**Poziom**: średni
+**Poziom**: średni  
 **Cel**: Adapter - konwersja niekompatybilnych interfejsów
 
 ## 🎯 Zadanie
@@ -23,7 +23,7 @@ Zaimplementuj wzorzec Adapter dla systemu płatności e-commerce. Trzy różne s
 2. Otwórz `starter.py`
 3. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest test_adapter.py -v`
+   - Pytest: `pytest tests.py -v`
 4. Zaimplementuj trzy adaptery:
    - Każdy dziedziczy z `PaymentProcessor`
    - Zawiera instancję zewnętrznego serwisu (kompozycja)

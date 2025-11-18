@@ -15,7 +15,7 @@ Zaimplementuj `Game` i `ScoreService` (pośrednika), aby zredukować sprzężeni
 1. Otwórz `starter.py`
 2. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+   - Pytest: `pytest tests.py -v`
 3. Zaimplementuj klasę `ScoreService`
 4. Zaimplementuj klasę `Game` z dependency injection
 5. Uruchom testy ponownie (teraz powinny przejść)

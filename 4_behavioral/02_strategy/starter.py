@@ -34,7 +34,7 @@ from typing import Dict, Any
 from datetime import datetime
 
 
-# %% Helper Classes - GOTOWE
+# Helper Classes - GOTOWE
 
 class TaskPriority(Enum):
     """Priorytety zadań w workflow"""
@@ -59,7 +59,7 @@ class WorkflowTask:
         self.completed_at = datetime.now()
 
 
-# %% Strategy Interface - GOTOWE
+# Strategy Interface - GOTOWE
 # WZORZEC: Strategy (interfejs strategii)
 
 class TaskProcessor(ABC):
@@ -71,62 +71,141 @@ class TaskProcessor(ABC):
         pass
 
 
-# %% Concrete Strategies - DO IMPLEMENTACJI
+# Concrete Strategies - ROZWIĄZANIE
 # WZORZEC: Concrete Strategy (konkretna strategia)
 
-# TODO: Zaimplementuj klasę UrgentTaskProcessor
-# Dziedziczy po TaskProcessor
-# Metoda process_task(task: WorkflowTask) -> Dict[str, Any]:
-#   - Zapisz start time (time.time())
-#   - Walidacja: sprawdź czy task.priority == URGENT i description nie jest puste
-#   - Natychmiastowe przetwarzanie (bez delay, bez time.sleep)
-#   - Oznacz zadanie jako completed (task.mark_completed())
-#   - Zwróć dict z kluczami: "status" (str), "processing_time" (float), "strategy_used" (str = "urgent"), "validation_passed" (bool)
+class UrgentTaskProcessor(TaskProcessor):
+    """Strategia dla zadań pilnych - natychmiastowe przetwarzanie"""
 
-class UrgentTaskProcessor:
-    pass
+    def process_task(self, task: WorkflowTask) -> Dict[str, Any]:
+        start_time = time.time()
 
+        # Walidacja: sprawdź czy zadanie jest pilne i ma opis
+        validation_passed = bool(
+            task.priority == TaskPriority.URGENT
+            and task.description
+        )
 
-# TODO: Zaimplementuj klasę StandardTaskProcessor
-# Dziedziczy po TaskProcessor
-# Metoda process_task(task: WorkflowTask) -> Dict[str, Any]:
-#   - Zapisz start time (time.time())
-#   - Walidacja: sprawdź czy title ma przynajmniej 3 znaki
-#   - Symuluj przetwarzanie: time.sleep(1)
-#   - Oznacz zadanie jako completed (task.mark_completed())
-#   - Zwróć dict z kluczami: "status" (str), "processing_time" (float), "strategy_used" (str = "standard"), "validation_passed" (bool)
+        # Natychmiastowe przetwarzanie (bez delay)
+        task.mark_completed()
 
-class StandardTaskProcessor:
-    pass
+        return {
+            "status": "completed",
+            "processing_time": time.time() - start_time,
+            "strategy_used": "urgent",
+            "validation_passed": validation_passed
+        }
 
 
-# TODO: Zaimplementuj klasę BackgroundTaskProcessor
-# Dziedziczy po TaskProcessor
-# Metoda process_task(task: WorkflowTask) -> Dict[str, Any]:
-#   - Zapisz start time (time.time())
-#   - Walidacja: sprawdź czy priority != URGENT (zadania pilne nie mogą być w tle)
-#   - Symuluj wolne przetwarzanie: time.sleep(0.1)
-#   - Oznacz zadanie jako completed (task.mark_completed())
-#   - Zwróć dict z kluczami: "status" (str), "processing_time" (float), "strategy_used" (str = "background"), "validation_passed" (bool)
+class StandardTaskProcessor(TaskProcessor):
+    """Strategia dla zadań standardowych - normalne przetwarzanie"""
 
-class BackgroundTaskProcessor:
-    pass
+    def process_task(self, task: WorkflowTask) -> Dict[str, Any]:
+        start_time = time.time()
+
+        # Walidacja: sprawdź czy tytuł ma przynajmniej 3 znaki
+        validation_passed = len(task.title) >= 3
+
+        # Symulacja normalnego przetwarzania
+        time.sleep(1)
+        task.mark_completed()
+
+        return {
+            "status": "completed",
+            "processing_time": time.time() - start_time,
+            "strategy_used": "standard",
+            "validation_passed": validation_passed
+        }
 
 
-# %% Context - DO IMPLEMENTACJI
+class BackgroundTaskProcessor(TaskProcessor):
+    """Strategia dla zadań w tle - wolne przetwarzanie"""
+
+    def process_task(self, task: WorkflowTask) -> Dict[str, Any]:
+        start_time = time.time()
+
+        # Walidacja: zadania pilne nie mogą być w tle
+        validation_passed = task.priority != TaskPriority.URGENT
+
+        # Symulacja wolnego przetwarzania w tle
+        time.sleep(0.1)
+        task.mark_completed()
+
+        return {
+            "status": "completed",
+            "processing_time": time.time() - start_time,
+            "strategy_used": "background",
+            "validation_passed": validation_passed
+        }
+
+
+# Context - ROZWIĄZANIE
 # WZORZEC: Context (kontekst używający strategii)
 
-# TODO: Zaimplementuj klasę TaskManager
-# Konstruktor przyjmuje strategy: TaskProcessor = None (opcjonalna strategia)
-#   - Przechowuje strategię jako self.strategy
-#
-# Metoda set_strategy(strategy: TaskProcessor) -> None:
-#   - Ustawia nową strategię przetwarzania (self.strategy = strategy)
-#
-# Metoda execute_task(task: WorkflowTask) -> Dict[str, Any]:
-#   - Sprawdza czy strategia jest ustawiona (jeśli nie - raise ValueError("No strategy set"))
-#   - Deleguje do self.strategy.process_task(task)
-#   - Zwraca wynik z process_task()
-
 class TaskManager:
-    pass
+    """
+    Manager zadań - deleguje przetwarzanie do strategii
+
+    Context we wzorcu Strategy - nie wie jak przetwarzać zadania,
+    deleguje to do aktualnie ustawionej strategii.
+    """
+
+    def __init__(self, strategy: TaskProcessor = None):
+        """
+        Inicjalizacja managera z opcjonalną strategią
+
+        Args:
+            strategy: Początkowa strategia przetwarzania
+        """
+        self.strategy = strategy
+
+    def set_strategy(self, strategy: TaskProcessor) -> None:
+        """
+        Zmienia strategię przetwarzania w runtime
+
+        Args:
+            strategy: Nowa strategia przetwarzania
+        """
+        self.strategy = strategy
+
+    def execute_task(self, task: WorkflowTask) -> Dict[str, Any]:
+        """
+        Wykonuje zadanie używając aktualnej strategii
+
+        Args:
+            task: Zadanie do wykonania
+
+        Returns:
+            Wynik przetwarzania z strategii
+
+        Raises:
+            ValueError: Gdy strategia nie jest ustawiona
+        """
+        if self.strategy is None:
+            raise ValueError("No strategy set")
+
+        # Delegacja do strategii
+        return self.strategy.process_task(task)
+
+
+# Przykład użycia
+if __name__ == "__main__":
+    # Tworzenie managera z początkową strategią
+    manager = TaskManager(UrgentTaskProcessor())
+
+    # Urgent processing
+    urgent_task = WorkflowTask("Security breach", TaskPriority.URGENT, "Critical fix needed")
+    result = manager.execute_task(urgent_task)
+    print(f"Urgent: {result['strategy_used']}, time: {result['processing_time']:.3f}s")
+
+    # Zmiana strategii w runtime
+    manager.set_strategy(StandardTaskProcessor())
+    standard_task = WorkflowTask("Fix bug", TaskPriority.HIGH, "Bug in user interface")
+    result = manager.execute_task(standard_task)
+    print(f"Standard: {result['strategy_used']}, time: {result['processing_time']:.3f}s")
+
+    # Kolejna zmiana strategii
+    manager.set_strategy(BackgroundTaskProcessor())
+    low_task = WorkflowTask("Update docs", TaskPriority.LOW, "Documentation update")
+    result = manager.execute_task(low_task)
+    print(f"Background: {result['strategy_used']}, time: {result['processing_time']:.3f}s")

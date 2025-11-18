@@ -65,73 +65,122 @@ class BaseProduct(Product):
         return self.name
 
 
-# Decorator - DO IMPLEMENTACJI
+# Decorator - ROZWIĄZANIE
 # WZORZEC: Kompozycja + Dziedziczenie + Delegacja
 
-# TODO: Zaimplementuj DiscountDecorator
-# KLUCZOWE dla wzorca Decorator:
-# 1. DZIEDZICZENIE: class DiscountDecorator(Product) - ten sam interfejs co Product
-# 2. KOMPOZYCJA: __init__(self, product: Product) - wrappuje Product
-# 3. DELEGACJA: get_price() i get_description() wywołują self.product.get_price()
-#
-# Bazowy dekorator tylko deleguje (bez modyfikacji) - konkretne dekoratory nadpiszą metody
+class DiscountDecorator(Product):
+    """
+    Bazowy dekorator dla wszystkich rodzajów promocji
 
-class DiscountDecorator:
-    pass
+    KLUCZOWE dla wzorca Decorator:
+    1. DZIEDZICZENIE: DiscountDecorator(Product) - ten sam interfejs
+    2. KOMPOZYCJA: przechowuje referencję do Product
+    3. DELEGACJA: wywołuje metody wrappowanego produktu
+    """
+
+    def __init__(self, product: Product):
+        """
+        Inicjalizuj dekorator z wrappowanym produktem
+
+        Args:
+            product: Produkt do wrappowania (może być BaseProduct lub inny decorator)
+        """
+        self.product = product  # KOMPOZYCJA - przechowujemy referencję
+
+    def get_price(self) -> float:
+        """DELEGACJA - wywołaj metodę wrappowanego produktu"""
+        return self.product.get_price()
+
+    def get_description(self) -> str:
+        """DELEGACJA - wywołaj metodę wrappowanego produktu"""
+        return self.product.get_description()
 
 
-# Concrete Decorators - DO IMPLEMENTACJI
+# Concrete Decorators - ROZWIĄZANIE
 # Nadpisują get_price() i/lub get_description() żeby dodać funkcjonalność
 
-# TODO: Zaimplementuj PercentageDiscount
-# Dziedziczy po DiscountDecorator
-# __init__(self, product: Product, percentage: float) - dodatkowo zapisz percentage
-# get_price() - pobierz cenę z self.product, zastosuj rabat procentowy
-# get_description() - pobierz opis z self.product, dodaj " ({percentage}% off)"
+class PercentageDiscount(DiscountDecorator):
+    """Dekorator rabatu procentowego"""
 
-class PercentageDiscount:
-    pass
+    def __init__(self, product: Product, percentage: float):
+        """
+        Inicjalizuj z produktem i procentem rabatu
 
+        Args:
+            product: Wrappowany produkt
+            percentage: Procent rabatu (np. 10 dla 10%)
+        """
+        super().__init__(product)  # Wywołaj konstruktor bazowy
+        self.percentage = percentage
 
-# TODO: Zaimplementuj FixedAmountDiscount
-# Dziedziczy po DiscountDecorator
-# __init__(self, product: Product, amount: float) - dodatkowo zapisz amount
-# get_price() - pobierz cenę z self.product, odejmij amount (min 0)
-# get_description() - pobierz opis z self.product, dodaj " (${amount} off)"
+    def get_price(self) -> float:
+        """Zwróć cenę po zastosowaniu rabatu procentowego"""
+        original_price = self.product.get_price()  # DELEGACJA
+        return original_price * (1 - self.percentage / 100)  # MODYFIKACJA
 
-class FixedAmountDiscount:
-    pass
-
-
-# TODO: Zaimplementuj FreeShipping
-# Dziedziczy po DiscountDecorator
-# __init__(self, product: Product) - tylko product (bez dodatkowych parametrów)
-# get_price() - deleguj bez zmian (free shipping nie wpływa na cenę)
-# get_description() - pobierz opis z self.product, dodaj " + Free Shipping"
-
-class FreeShipping:
-    pass
+    def get_description(self) -> str:
+        """Zwróć opis z informacją o rabacie"""
+        original_desc = self.product.get_description()  # DELEGACJA
+        return f"{original_desc} ({self.percentage}% off)"  # MODYFIKACJA
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     # Podstawowy produkt
-#     laptop = BaseProduct("Gaming Laptop", 1000.0)
-#     print(f"{laptop.get_description()}: ${laptop.get_price()}")
-#
-#     # Opakowywanie decoratorami
-#     step1 = PercentageDiscount(laptop, 10)  # 10% off -> $900
-#     print(f"{step1.get_description()}: ${step1.get_price()}")
-#
-#     step2 = FixedAmountDiscount(step1, 50)  # $50 off -> $850
-#     print(f"{step2.get_description()}: ${step2.get_price()}")
-#
-#     step3 = FreeShipping(step2)  # Free shipping
-#     print(f"{step3.get_description()}: ${step3.get_price()}")
-#
-#     print("\n--- Black Friday Deal ---")
-#     phone = BaseProduct("Smartphone", 800.0)
-#     black_friday = FreeShipping(FixedAmountDiscount(PercentageDiscount(phone, 20), 50))
-#     print(f"{black_friday.get_description()}: ${black_friday.get_price()}")
-#
-#     # Wzorzec Decorator pozwala dynamicznie opakowywać obiekt w funkcjonalności!
+class FixedAmountDiscount(DiscountDecorator):
+    """Dekorator rabatu kwotowego"""
+
+    def __init__(self, product: Product, amount: float):
+        """
+        Inicjalizuj z produktem i kwotą rabatu
+
+        Args:
+            product: Wrappowany produkt
+            amount: Kwota rabatu w $
+        """
+        super().__init__(product)
+        self.amount = amount
+
+    def get_price(self) -> float:
+        """Zwróć cenę po odjęciu kwoty rabatu"""
+        original_price = self.product.get_price()  # DELEGACJA
+        return max(0, original_price - self.amount)  # MODYFIKACJA (min 0)
+
+    def get_description(self) -> str:
+        """Zwróć opis z informacją o rabacie kwotowym"""
+        original_desc = self.product.get_description()  # DELEGACJA
+        return f"{original_desc} (${self.amount} off)"  # MODYFIKACJA
+
+
+class FreeShipping(DiscountDecorator):
+    """Dekorator darmowej dostawy (nie zmienia ceny, tylko opis)"""
+
+    def get_price(self) -> float:
+        """Zwróć cenę bez zmian (free shipping nie wpływa na cenę produktu)"""
+        return self.product.get_price()  # DELEGACJA bez modyfikacji
+
+    def get_description(self) -> str:
+        """Zwróć opis z informacją o darmowej dostawie"""
+        original_desc = self.product.get_description()  # DELEGACJA
+        return f"{original_desc} + Free Shipping"  # MODYFIKACJA
+
+
+# Przykład użycia
+if __name__ == "__main__":
+    # Podstawowy produkt
+    laptop = BaseProduct("Gaming Laptop", 1000.0)
+    print(f"{laptop.get_description()}: ${laptop.get_price()}")
+
+    # Opakowywanie decoratorami
+    step1 = PercentageDiscount(laptop, 10)  # 10% off -> $900
+    print(f"{step1.get_description()}: ${step1.get_price()}")
+
+    step2 = FixedAmountDiscount(step1, 50)  # $50 off -> $850
+    print(f"{step2.get_description()}: ${step2.get_price()}")
+
+    step3 = FreeShipping(step2)  # Free shipping
+    print(f"{step3.get_description()}: ${step3.get_price()}")
+
+    print("\n--- Black Friday Deal ---")
+    phone = BaseProduct("Smartphone", 800.0)
+    black_friday = FreeShipping(FixedAmountDiscount(PercentageDiscount(phone, 20), 50))
+    print(f"{black_friday.get_description()}: ${black_friday.get_price()}")
+
+    # Wzorzec Decorator pozwala dynamicznie opakowywać obiekt w funkcjonalności!

@@ -74,26 +74,57 @@ class Iterator(ABC):
         pass
 
 
-# Concrete Iterator - DO IMPLEMENTACJI
+# Concrete Iterator - ROZWIĄZANIE
 # WZORZEC: Konkretny iterator enkapsulujący sposób przechodzenia przez kolekcję
 
-# TODO: Zaimplementuj BookIterator
-# KLUCZOWE dla wzorca Iterator:
-# 1. KOMPOZYCJA: iterator przechowuje referencję do kolekcji (nie kopiuje!)
-# 2. ENKAPSULACJA: ukrywa szczegóły iteracji (indeks, logika przechodzenia)
-# 3. SEPARACJA: logika iteracji oddzielona od kolekcji
-#
-# Metody do zaimplementowania:
-# - __init__(self, books: List[Book]) - przechowaj books, ustaw self.index = 0
-# - has_next() -> bool - sprawdź czy self.index < len(self.books)
-# - next() -> Book - zwróć self.books[self.index], zwiększ self.index o 1
-#   (przed zwróceniem sprawdź has_next(), jeśli False - raise StopIteration)
+class BookIterator(Iterator):
+    """
+    Iterator dla kolekcji książek
 
-class BookIterator:
-    pass
+    KLUCZOWE dla wzorca Iterator:
+    1. KOMPOZYCJA: przechowuje referencję do kolekcji (nie kopiuje!)
+    2. ENKAPSULACJA: ukrywa szczegóły iteracji (indeks)
+    3. SEPARACJA: logika iteracji oddzielona od kolekcji
+    """
+
+    def __init__(self, books: List[Book]):
+        """
+        Inicjalizuj iterator z kolekcją książek
+
+        Args:
+            books: Lista książek do iteracji (referencja, nie kopia!)
+        """
+        self.books = books  # KOMPOZYCJA - przechowujemy referencję
+        self.index = 0  # Stan iteratora
+
+    def has_next(self) -> bool:
+        """
+        Sprawdź czy są jeszcze elementy do przeiterowania
+
+        Returns:
+            True jeśli są jeszcze elementy, False w przeciwnym razie
+        """
+        return self.index < len(self.books)
+
+    def next(self) -> Book:
+        """
+        Zwróć następny element i przesuń wskaźnik
+
+        Returns:
+            Następna książka w kolekcji
+
+        Raises:
+            StopIteration: Gdy nie ma więcej elementów
+        """
+        if not self.has_next():
+            raise StopIteration("No more elements in collection")
+
+        book = self.books[self.index]
+        self.index += 1  # Przesuń wskaźnik
+        return book
 
 
-# Aggregate (Collection) - CZĘŚCIOWO GOTOWE
+# Aggregate (Collection) - ROZWIĄZANIE
 # WZORZEC: Kolekcja dostarczająca iterator
 
 class BookCollection:
@@ -107,35 +138,40 @@ class BookCollection:
         """Dodaj książkę do kolekcji"""
         self._books.append(book)
 
-    # TODO: Zaimplementuj create_iterator
-    # Zwraca nowy BookIterator z self._books
-    # To pozwala na wielokrotną iterację (każdy iterator ma własny stan)
-
     def create_iterator(self) -> Iterator:
-        """Tworzy iterator dla tej kolekcji"""
-        pass
+        """
+        Tworzy iterator dla tej kolekcji
+
+        Returns:
+            Nowy iterator zaczynający od początku kolekcji
+
+        Note:
+            Każde wywołanie tworzy NOWY iterator z własnym stanem.
+            To pozwala na wielokrotną niezależną iterację.
+        """
+        return BookIterator(self._books)
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     # Tworzenie kolekcji
-#     collection = BookCollection()
-#     collection.add_book(Book("1984", "George Orwell", 1949))
-#     collection.add_book(Book("Brave New World", "Aldous Huxley", 1932))
-#     collection.add_book(Book("Fahrenheit 451", "Ray Bradbury", 1953))
-#
-#     # Użycie iteratora - klient nie zna wewnętrznej struktury!
-#     print("=== Iteracja przez książki ===")
-#     iterator = collection.create_iterator()
-#     while iterator.has_next():
-#         book = iterator.next()
-#         print(book)
-#
-#     # Wiele niezależnych iteratorów
-#     print("\n=== Dwa niezależne iteratory ===")
-#     iterator1 = collection.create_iterator()
-#     iterator2 = collection.create_iterator()
-#
-#     print(f"Iterator 1: {iterator1.next()}")
-#     print(f"Iterator 1: {iterator1.next()}")
-#     print(f"Iterator 2: {iterator2.next()}")  # Zaczyna od początku!
+# Przykład użycia
+if __name__ == "__main__":
+    # Tworzenie kolekcji
+    collection = BookCollection()
+    collection.add_book(Book("1984", "George Orwell", 1949))
+    collection.add_book(Book("Brave New World", "Aldous Huxley", 1932))
+    collection.add_book(Book("Fahrenheit 451", "Ray Bradbury", 1953))
+
+    # Użycie iteratora - klient nie zna wewnętrznej struktury!
+    print("=== Iteracja przez książki ===")
+    iterator = collection.create_iterator()
+    while iterator.has_next():
+        book = iterator.next()
+        print(book)
+
+    # Wiele niezależnych iteratorów
+    print("\n=== Dwa niezależne iteratory ===")
+    iterator1 = collection.create_iterator()
+    iterator2 = collection.create_iterator()
+
+    print(f"Iterator 1: {iterator1.next()}")
+    print(f"Iterator 1: {iterator1.next()}")
+    print(f"Iterator 2: {iterator2.next()}")  # Zaczyna od początku!

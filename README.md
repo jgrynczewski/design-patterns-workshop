@@ -2,8 +2,6 @@
 
 Warsztat wzorców projektowych w Pythonie
 
-![Tests](https://github.com/YOUR-ORG/design-patterns-workshop/workflows/Design%20Patterns%20Labs/badge.svg)
-
 ## 📊 Postęp
 
 ### 📚 Intro
@@ -64,22 +62,7 @@ pip install -r requirements.txt
 ```bash
 # Lab 01 - Intro: Hello World
 cd 0_intro/01_hello
-pytest -v
-
-# Lab 05 - Factory Method
-cd 2_creational/01_factory_method
-pytest -v
-
-# Lab 09 - Adapter
-cd 3_structural/01_adapter
-pytest -v
-
-# Lab 12 - Strategy
-cd 4_behavioral/02_strategy
-pytest -v
-
-# Wszystkie testy naraz
-pytest --tb=short
+pytest tests.py -v
 ```
 
 ---
@@ -87,7 +70,7 @@ pytest --tb=short
 ## ✅ Workflow
 
 1. Edytuj `starter.py` w folderze laba
-2. Uruchom testy: `pytest -v`
+2. Uruchom testy: `pytest tests.py -v`
 3. Commit & push gdy testy przejdą
 4. Sprawdź wyniki w GitHub Actions
 
@@ -97,8 +80,8 @@ pytest --tb=short
 
 - `README.md` - Polecenie i teoria
 - `starter.py` - **Tu piszesz kod** (wypełnij luki)
-- `tests.py` / `test_*.py` - Testy (nie edytuj)
-- `problem.py` - Kod bez wzorca (antyprzykład)
+- `tests.py` - Testy (nie edytuj)
+- `violation.py`/`problem.py` - Kod bez wzorca (antyprzykład)
 
 **Rozwiązania:** Sprawdź gałąź `solutions` po skończeniu laba
 
@@ -109,5 +92,5 @@ pytest --tb=short
 - Jeden lab na raz
 - Czytaj `README.md` w folderze laba
 - Sprawdzaj `violation.py`/`problem.py` (kod bez wzorca - czego NIE robić)
-- Testuj często (`pytest -v`)
+- Testuj często (`pytest tests.py -v`)
 - Utknąłeś? Sprawdź gałąź `solutions`

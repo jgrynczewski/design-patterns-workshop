@@ -144,8 +144,18 @@ class LeatherArmor(Armor):
 # - create_weapon() -> Weapon
 # - create_armor() -> Armor
 
-class EquipmentFactory:
-    pass
+class EquipmentFactory(ABC):
+    """Abstract Factory - interfejs dla fabryk ekwipunku"""
+
+    @abstractmethod
+    def create_weapon(self) -> Weapon:
+        """Tworzy broń odpowiednią dla klasy"""
+        pass
+
+    @abstractmethod
+    def create_armor(self) -> Armor:
+        """Tworzy pancerz odpowiedni dla klasy"""
+        pass
 
 
 # TODO: Zaimplementuj Concrete Factories
@@ -153,40 +163,58 @@ class EquipmentFactory:
 # Implementuje create_weapon() i create_armor()
 # Gwarantuje spójność - zawsze zwraca pasujące produkty z jednej rodziny
 
-class WarriorEquipmentFactory:
-    pass
+class WarriorEquipmentFactory(EquipmentFactory):
+    """Fabryka ekwipunku wojownika - gwarantuje spójny zestaw"""
+
+    def create_weapon(self) -> Weapon:
+        return Sword()
+
+    def create_armor(self) -> Armor:
+        return HeavyArmor()
 
 
-class MageEquipmentFactory:
-    pass
+class MageEquipmentFactory(EquipmentFactory):
+    """Fabryka ekwipunku maga - gwarantuje spójny zestaw"""
+
+    def create_weapon(self) -> Weapon:
+        return Staff()
+
+    def create_armor(self) -> Armor:
+        return LightRobe()
 
 
-class ArcherEquipmentFactory:
-    pass
+class ArcherEquipmentFactory(EquipmentFactory):
+    """Fabryka ekwipunku łucznika - gwarantuje spójny zestaw"""
+
+    def create_weapon(self) -> Weapon:
+        return Bow()
+
+    def create_armor(self) -> Armor:
+        return LeatherArmor()
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     print("=== WARRIOR EQUIPMENT ===")
-#     warrior_factory = WarriorEquipmentFactory()
-#     weapon = warrior_factory.create_weapon()
-#     armor = warrior_factory.create_armor()
-#     print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
-#     print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
-#
-#     print("\n=== MAGE EQUIPMENT ===")
-#     mage_factory = MageEquipmentFactory()
-#     weapon = mage_factory.create_weapon()
-#     armor = mage_factory.create_armor()
-#     print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
-#     print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
-#
-#     print("\n=== ARCHER EQUIPMENT ===")
-#     archer_factory = ArcherEquipmentFactory()
-#     weapon = archer_factory.create_weapon()
-#     armor = archer_factory.create_armor()
-#     print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
-#     print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
-#
-#     print("\n✅ Gwarantowana spójność!")
-#     print("Niemożliwe stworzenie Sword + LightRobe przez fabrykę")
+# Przykład użycia
+if __name__ == "__main__":
+    print("=== WARRIOR EQUIPMENT ===")
+    warrior_factory = WarriorEquipmentFactory()
+    weapon = warrior_factory.create_weapon()
+    armor = warrior_factory.create_armor()
+    print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
+    print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
+
+    print("\n=== MAGE EQUIPMENT ===")
+    mage_factory = MageEquipmentFactory()
+    weapon = mage_factory.create_weapon()
+    armor = mage_factory.create_armor()
+    print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
+    print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
+
+    print("\n=== ARCHER EQUIPMENT ===")
+    archer_factory = ArcherEquipmentFactory()
+    weapon = archer_factory.create_weapon()
+    armor = archer_factory.create_armor()
+    print(f"Weapon: {weapon.get_name()} (DMG: {weapon.damage()})")
+    print(f"Armor: {armor.get_name()} (DEF: {armor.defense()})")
+
+    print("\n✅ Gwarantowana spójność!")
+    print("Niemożliwe stworzenie Sword + LightRobe przez fabrykę")

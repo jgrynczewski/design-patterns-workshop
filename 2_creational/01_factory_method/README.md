@@ -16,7 +16,7 @@ Zaimplementuj wzorzec Factory Method dla systemu broni w grze RPG. Każda posta�
 1. Otwórz `starter.py`
 2. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+   - Pytest: `pytest tests.py -v`
 3. Klasy broni (`Sword`, `Staff`, `Bow`) są już gotowe (STEP 1-2)
 4. Zaimplementuj klasę `Character` (STEP 3)
    - Klasa abstrakcyjna z konstruktorem przyjmującym `name: str`

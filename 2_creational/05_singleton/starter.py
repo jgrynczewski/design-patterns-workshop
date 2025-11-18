@@ -33,6 +33,15 @@ class ConfigManager:
     - Inicjalizacja _config w __new__ (gdy tworzysz nową instancję)
     """
 
+    _instance = None
+
+    def __new__(cls):
+        """Kontroluje tworzenie instancji - zawsze zwraca tę samą"""
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance._config = {}
+        return cls._instance
+
     def set_config(self, key: str, value: Any) -> None:
         """Ustawia wartość konfiguracji"""
         self._config[key] = value
@@ -42,17 +51,17 @@ class ConfigManager:
         return self._config.get(key)
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     # Test singleton
-#     config1 = ConfigManager()
-#     config2 = ConfigManager()
-#
-#     print(f"Same instance: {config1 is config2}")
-#
-#     # Test współdzielonego stanu
-#     config1.set_config("theme", "dark")
-#     config1.set_config("language", "en")
-#
-#     print(f"Theme from config1: {config1.get_config('theme')}")
-#     print(f"Theme from config2: {config2.get_config('theme')}")
+# Przykład użycia
+if __name__ == "__main__":
+    # Test singleton
+    config1 = ConfigManager()
+    config2 = ConfigManager()
+
+    print(f"Same instance: {config1 is config2}")
+
+    # Test współdzielonego stanu
+    config1.set_config("theme", "dark")
+    config1.set_config("language", "en")
+
+    print(f"Theme from config1: {config1.get_config('theme')}")
+    print(f"Theme from config2: {config2.get_config('theme')}")

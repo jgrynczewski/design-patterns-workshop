@@ -26,24 +26,25 @@ True
 from typing import Dict, Any
 
 
-# ProductType (Flyweight) - CZĘŚCIOWO GOTOWE
+# ProductType (Flyweight) - ROZWIĄZANIE
 # WZORZEC: Przechowuje intrinsic state (dane współdzielone)
 
 class ProductType:
     """
     Flyweight przechowujący intrinsic state
 
-    KLUCZOWE: Przechowuje TYLKO dane współdzielone (niezmienne)
-    Wiele produktów może współdzielić ten sam ProductType
+    KLUCZOWE dla wzorca Flyweight:
+    1. INTRINSIC STATE: Przechowuje TYLKO dane współdzielone (category, brand, specs)
+    2. NIEZMIENNOŚĆ: Flyweight powinien być niemutowalny (immutable)
+    3. WSPÓŁDZIELENIE: Jeden flyweight jest używany przez wiele kontekstów
     """
 
     def __init__(self, category: str, brand: str, specifications: Dict[str, Any]):
         """Inicjalizuj flyweight z intrinsic state"""
-        # TODO: Zapisz intrinsic state (dane współdzielone):
-        # self.category = category
-        # self.brand = brand
-        # self.specifications = specifications
-        pass
+        # Intrinsic state - dane współdzielone między produktami
+        self.category = category
+        self.brand = brand
+        self.specifications = specifications
 
     def display_shared_info(self, sku: str, price: float, stock_quantity: int) -> str:
         """
@@ -52,27 +53,33 @@ class ProductType:
         KLUCZOWE: Flyweight otrzymuje extrinsic state jako parametry,
         nie przechowuje ich (bo są unikalne dla każdego produktu)
         """
-        # TODO: Połącz intrinsic state (self.*) z extrinsic state (parametry)
-        # Format: "SKU: {sku} | {brand} {category} | Price: ${price} | Stock: {stock} | Specs: ..."
-        pass
+        # Połączenie intrinsic (self.*) z extrinsic (parametry)
+        specs_str = ", ".join(f"{k}: {v}" for k, v in self.specifications.items())
+        return (
+            f"SKU: {sku} | "
+            f"{self.brand} {self.category} | "
+            f"Price: ${price} | "
+            f"Stock: {stock_quantity} | "
+            f"Specs: {specs_str}"
+        )
 
 
-# ProductTypeFactory - DO IMPLEMENTACJI
+# ProductTypeFactory - ROZWIĄZANIE
 # WZORZEC: Zarządza pulą flyweights, zapobiega duplikatom
 
 class ProductTypeFactory:
     """
     Factory zarządzający pulą flyweights
 
-    KLUCZOWE: Zwraca istniejący flyweight lub tworzy nowy
-    To eliminuje duplikację - ten sam typ = ten sam obiekt
+    KLUCZOWE dla wzorca Flyweight:
+    1. PULA FLYWEIGHTS: Słownik przechowujący utworzone flyweights
+    2. SPRAWDZANIE ISTNIENIA: Przed utworzeniem sprawdza czy flyweight istnieje
+    3. WSPÓŁDZIELENIE: Zwraca istniejący flyweight zamiast tworzyć nowy
     """
 
     def __init__(self):
         """Inicjalizuj factory z pustą pulą"""
-        # TODO: Stwórz słownik do przechowywania flyweights
-        # self._flyweights = {}
-        pass
+        self._flyweights: Dict[tuple, ProductType] = {}
 
     def get_product_type(self, category: str, brand: str,
                         specifications: Dict[str, Any]) -> ProductType:
@@ -82,83 +89,105 @@ class ProductTypeFactory:
         KLUCZOWE: Jeśli flyweight istnieje - zwróć go
         Jeśli nie - stwórz nowy i zapisz w puli
         """
-        # TODO: Implementuj logikę factory:
-        # 1. Stwórz klucz z parametrów (category, brand, frozenset(specifications.items()))
-        # 2. Sprawdź czy flyweight już istnieje w self._flyweights
-        # 3. Jeśli tak - zwróć istniejący
-        # 4. Jeśli nie - stwórz nowy ProductType, zapisz w puli, zwróć
-        pass
+        # Stwórz klucz hashable z parametrów
+        # frozenset dla specifications (dict nie jest hashable)
+        key = (category, brand, frozenset(specifications.items()))
+
+        # Sprawdź czy flyweight już istnieje
+        if key not in self._flyweights:
+            # Nie istnieje - stwórz nowy i zapisz
+            self._flyweights[key] = ProductType(category, brand, specifications)
+
+        # Zwróć flyweight (istniejący lub nowo utworzony)
+        return self._flyweights[key]
 
     def get_flyweight_count(self) -> int:
         """Zwróć liczbę flyweights w puli"""
-        # TODO: return len(self._flyweights)
-        pass
+        return len(self._flyweights)
 
 
-# Product (Context) - DO IMPLEMENTACJI
+# Product (Context) - ROZWIĄZANIE
 # WZORZEC: Przechowuje extrinsic state + referencję do flyweight
 
 class Product:
     """
     Context przechowujący extrinsic state
 
-    KLUCZOWE: Przechowuje TYLKO dane unikalne + referencję do flyweight
-    Nie duplikuje intrinsic state - tylko wskazuje na współdzielony flyweight
+    KLUCZOWE dla wzorca Flyweight:
+    1. EXTRINSIC STATE: Przechowuje TYLKO dane unikalne (sku, price, stock)
+    2. REFERENCJA DO FLYWEIGHT: Wskazuje na współdzielony flyweight
+    3. DELEGACJA: Przekazuje extrinsic state do flyweight gdy potrzeba
     """
 
     def __init__(self, sku: str, product_type: ProductType,
                  price: float, stock_quantity: int):
         """Inicjalizuj produkt z extrinsic state i flyweight"""
-        # TODO: Zapisz extrinsic state (dane unikalne):
-        # self.sku = sku
-        # self.price = price
-        # self.stock_quantity = stock_quantity
-        # self.product_type = product_type  # Referencja do flyweight
-        pass
+        # Extrinsic state - dane unikalne dla tego produktu
+        self.sku = sku
+        self.price = price
+        self.stock_quantity = stock_quantity
+
+        # Referencja do flyweight (intrinsic state)
+        self.product_type = product_type
 
     def display_info(self) -> str:
         """Wyświetl pełne info o produkcie"""
-        # TODO: Deleguj do flyweight, przekazując extrinsic state
-        # return self.product_type.display_shared_info(self.sku, self.price, self.stock_quantity)
-        pass
+        # Deleguj do flyweight, przekazując extrinsic state
+        return self.product_type.display_shared_info(
+            self.sku, self.price, self.stock_quantity
+        )
 
     def update_price(self, new_price: float) -> None:
         """Zaktualizuj cenę (extrinsic state)"""
-        # TODO: self.price = new_price
-        pass
+        self.price = new_price
 
     def update_stock(self, new_stock: int) -> None:
         """Zaktualizuj stan magazynowy (extrinsic state)"""
-        # TODO: self.stock_quantity = new_stock
-        pass
+        self.stock_quantity = new_stock
 
 
-# Przykład użycia - odkomentuj gdy zaimplementujesz:
-# if __name__ == "__main__":
-#     # Stwórz factory
-#     factory = ProductTypeFactory()
-#
-#     # Specyfikacje laptopa Dell
-#     dell_specs = {"CPU": "i7", "RAM": "16GB", "Storage": "512GB"}
-#
-#     # Stwórz wiele produktów tego samego typu
-#     print("=== Tworzenie produktów ===")
-#     products = []
-#     for i in range(5):
-#         # get_product_type zwróci TEN SAM flyweight dla tych samych danych
-#         laptop_type = factory.get_product_type("Electronics", "Dell", dell_specs)
-#         product = Product(f"DELL-{i:03d}", laptop_type, 1500 + i*50, 10 - i)
-#         products.append(product)
-#         print(product.display_info())
-#
-#     # Pokaż oszczędność pamięci
-#     print(f"\n=== Statystyki ===")
-#     print(f"Liczba produktów: {len(products)}")
-#     print(f"Liczba flyweights: {factory.get_flyweight_count()}")
-#     print(f"Oszczędność: {len(products)} produktów współdzieli {factory.get_flyweight_count()} flyweight(s)!")
-#
-#     # Sprawdź że wszystkie produkty mają ten sam flyweight
-#     print(f"\n=== Weryfikacja współdzielenia ===")
-#     first_type = products[0].product_type
-#     all_same = all(p.product_type is first_type for p in products)
-#     print(f"Wszystkie produkty współdzielą ten sam flyweight: {all_same}")
+# Przykład użycia
+if __name__ == "__main__":
+    # Stwórz factory
+    factory = ProductTypeFactory()
+
+    # Specyfikacje laptopa Dell
+    dell_specs = {"CPU": "i7", "RAM": "16GB", "Storage": "512GB"}
+
+    # Stwórz wiele produktów tego samego typu
+    print("=== Tworzenie produktów ===")
+    products = []
+    for i in range(5):
+        # get_product_type zwróci TEN SAM flyweight dla tych samych danych
+        laptop_type = factory.get_product_type("Electronics", "Dell", dell_specs)
+        product = Product(f"DELL-{i:03d}", laptop_type, 1500 + i*50, 10 - i)
+        products.append(product)
+        print(product.display_info())
+
+    # Pokaż oszczędność pamięci
+    print(f"\n=== Statystyki ===")
+    print(f"Liczba produktów: {len(products)}")
+    print(f"Liczba flyweights: {factory.get_flyweight_count()}")
+    print(f"Oszczędność: {len(products)} produktów współdzieli {factory.get_flyweight_count()} flyweight(s)!")
+
+    # Sprawdź że wszystkie produkty mają ten sam flyweight
+    print(f"\n=== Weryfikacja współdzielenia ===")
+    first_type = products[0].product_type
+    all_same = all(p.product_type is first_type for p in products)
+    print(f"Wszystkie produkty współdzielą ten sam flyweight: {all_same}")
+
+    # Dodaj produkty innych typów
+    print(f"\n=== Dodanie innych typów ===")
+    hp_specs = {"CPU": "i5", "RAM": "8GB", "Storage": "256GB"}
+    hp_type = factory.get_product_type("Electronics", "HP", hp_specs)
+    hp_product = Product("HP-001", hp_type, 999.0, 15)
+    products.append(hp_product)
+
+    apple_specs = {"CPU": "M1", "RAM": "16GB", "Storage": "512GB"}
+    apple_type = factory.get_product_type("Electronics", "Apple", apple_specs)
+    apple_product = Product("APPLE-001", apple_type, 2499.0, 5)
+    products.append(apple_product)
+
+    print(f"Liczba produktów: {len(products)}")
+    print(f"Liczba flyweights: {factory.get_flyweight_count()}")
+    print(f"7 produktów, ale tylko {factory.get_flyweight_count()} flyweights!")

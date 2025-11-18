@@ -17,7 +17,7 @@ Zaimplementuj wzorzec Facade dla systemu inteligentnego domu. `SmartHomeFacade` 
 1. Otwórz `starter.py`
 2. Uruchom testy (powinny failować):
    - Doctests: `python -m doctest starter.py -v`
-   - Pytest: `pytest` (lub `pytest -v` dla bardziej szczegółowego outputu)
+   - Pytest: `pytest tests.py -v`
 3. Podsystemy (`Light`, `Thermostat`, `SecuritySystem`, `TV`) są już gotowe
 4. Zaimplementuj klasę `SmartHomeFacade`:
    - Konstruktor tworzy instancje wszystkich podsystemów
