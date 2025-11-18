@@ -98,3 +98,9 @@ Jak to naprawić?
 2. MySQLDatabase i PostgreSQLDatabase dziedziczą po Database
 3. UserService przyjmuje Database w konstruktorze (dependency injection)
 """
+
+
+# Przykład użycia
+if __name__ == "__main__":
+    service = UserService()
+    print(service.save_user("user1", "Alice"))

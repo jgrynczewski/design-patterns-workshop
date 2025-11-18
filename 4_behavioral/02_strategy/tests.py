@@ -251,13 +251,13 @@ class TestStrategyPattern:
 
     def test_validation_differences(self):
         """Test różnych walidacji w strategiach"""
-        # Zadanie z krótkim tytułem
-        short_title_task = WorkflowTask("AB", TaskPriority.MEDIUM, "Short title")
+        # Zadanie z krótkim tytułem ale pilne
+        short_title_task = WorkflowTask("AB", TaskPriority.URGENT, "Short title")
 
         urgent_processor = UrgentTaskProcessor()
         standard_processor = StandardTaskProcessor()
 
-        # Urgent processor akceptuje (sprawdza tylko priorytet)
+        # Urgent processor akceptuje (sprawdza priorytet i opis)
         urgent_result = urgent_processor.process_task(short_title_task)
         # Standard processor odrzuca (sprawdza długość tytułu)
         standard_result = standard_processor.process_task(short_title_task)

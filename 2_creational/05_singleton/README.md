@@ -12,7 +12,6 @@ Zaimplementuj wzorzec Singleton dla systemu zarządzania konfiguracją gry. `Con
 - [ ] `ConfigManager` gwarantuje jedną instancję
 - [ ] Metoda `__new__` kontroluje tworzenie instancji
 - [ ] Współdzielony stan między wszystkimi "instancjami"
-- [ ] Metody: `set_config`, `get_config`, `has_config`, `get_all_configs`, `reset_configs`
 
 ## 🚀 Jak zacząć
 1. Przejrzyj `problem.py` - zobacz problem z wieloma instancjami
@@ -26,15 +25,7 @@ Zaimplementuj wzorzec Singleton dla systemu zarządzania konfiguracją gry. `Con
 4. Zaimplementuj wzorzec Singleton w `ConfigManager`:
    - Zmienna klasowa `_instance` przechowuje jedyną instancję
    - Metoda `__new__` kontroluje tworzenie - zwraca `_instance` jeśli istnieje
-   - Metoda `__init__` i metody zarządzania są już zaimplementowane (GOTOWE)
 5. Uruchom testy ponownie (teraz powinny przejść)
-6. Gdy wszystkie testy przechodzą:
-   ```bash
-   git add .
-   git commit -m "Complete Singleton pattern"
-   git push
-   ```
-7. Sprawdź wynik w GitHub Actions
 
 ## 💡 Singleton w pigułce
 
@@ -45,18 +36,6 @@ Zaimplementuj wzorzec Singleton dla systemu zarządzania konfiguracją gry. `Con
 2. Metoda `__new__` sprawdza czy `_instance` już istnieje
 3. Jeśli tak - zwraca istniejącą, jeśli nie - tworzy nową
 4. Wszystkie wywołania `ConfigManager()` zwracają TEN SAM obiekt
-
-### Kluczowy moment:
-```python
-def __new__(cls):
-    if cls._instance is None:
-        cls._instance = super().__new__(cls)
-    return cls._instance
-```
-
-`__new__` kontroluje tworzenie instancji - zawsze zwraca tę samą.
-
----
 
 ### ❌ Bez wzorca:
 ```python
@@ -74,14 +53,6 @@ config2.get_config("theme")  # None - utracona konfiguracja
 
 ### ✅ Z wzorcem (Singleton):
 ```python
-class ConfigManager:
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
 # Ta sama instancja zawsze
 config1 = ConfigManager()
 config1.set_config("theme", "dark")
@@ -95,6 +66,5 @@ config1 is config2  # True
 
 ## ⚠️ Uwagi
 - Singleton to kontrowersyjny wzorzec (global state, trudne testowanie)
-- W projektach produkcyjnych rozważ Dependency Injection
 - Przydatny dla: config, logging, cache management
 - Ten przykład to **basic Singleton** (bez thread safety)

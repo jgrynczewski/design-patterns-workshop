@@ -1,6 +1,6 @@
 # 👋 Intro - Prosty Kalkulator
 
-**Poziom**: bardzo łatwy  
+**Poziom**: N/A  
 **Cel**: Weryfikacja środowiska
 
 ## 🎯 Zadanie

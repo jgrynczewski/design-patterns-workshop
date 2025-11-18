@@ -21,8 +21,6 @@ Dependency Inversion Principle - Database Abstraction
 'Connected to PostgreSQL\\nSaved user2: Charlie to PostgreSQL'
 """
 
-from abc import ABC, abstractmethod
-
 
 # TODO: Zdefiniuj interfejs Database (ABC)
 # Metody: connect() i save(user_id, name)
@@ -58,3 +56,14 @@ class UserService:
 # DIP: High-level (UserService) zależy od abstrakcji (Database)
 # Low-level (MySQLDatabase, PostgreSQL) też zależą od abstrakcji
 # Możemy dodać MongoDB bez zmiany UserService!
+
+
+# Przykład użycia - odkomentuj gdy zaimplementujesz:
+# if __name__ == "__main__":
+#     mysql = MySQLDatabase()
+#     service = UserService(mysql)
+#     print(service.save_user("user1", "Alice"))
+#
+#     postgres = PostgreSQLDatabase()
+#     service2 = UserService(postgres)
+#     print(service2.save_user("user2", "Bob"))

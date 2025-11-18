@@ -1,6 +1,6 @@
 # 🔌 DIP - Abstrakcja Bazy Danych
 
-**Poziom**: łatwy
+**Poziom**: łatwy  
 **Cel**: Dependency Inversion Principle
 
 ## 🎯 Zadanie

@@ -53,3 +53,10 @@ class Game:
 # Game → ScoreService → Database (pośrednik)
 #
 # Korzyść: Zmiana Database nie wpływa na Game
+
+
+# Przykład użycia - odkomentuj gdy zaimplementujesz:
+# if __name__ == "__main__":
+#     service = ScoreService()
+#     game = Game(service)
+#     print(game.finish_game("Alice", 150))

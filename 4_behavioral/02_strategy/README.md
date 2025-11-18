@@ -51,7 +51,7 @@ Zaimplementuj wzorzec Strategy dla systemu przetwarzania zadań. Trzy różne st
 ### Kluczowy moment:
 ```python
 def execute_task(self, task: WorkflowTask) -> Dict[str, Any]:
-    # Context deleguje do strategii
+    # Delegacja do aktualnej strategii
     return self.strategy.process_task(task)
 ```
 

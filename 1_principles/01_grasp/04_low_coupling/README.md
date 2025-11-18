@@ -1,6 +1,6 @@
 # 🔗 GRASP Low Coupling - System Gry
 
-**Poziom**: łatwy
+**Poziom**: Łatwy  
 **Cel**: GRASP Low Coupling
 
 ## 🎯 Zadanie
@@ -44,12 +44,12 @@ class Game:
 ✅ **Dobrze** (luźne sprzężenie):
 ```python
 class Game:
-    def __init__(self, score_service):  # Pośrednik ✅
+    def __init__(self, score_service):  # 1. wstrzykujemy pośrednika ✅
         self.score_service = score_service
 
     def finish_game(self, player, score):
         self.score_service.save_score(player, score)
-        # Game nie zna Database - luźne sprzężenie
+        # 2. Game nie zna Database - luźne sprzężenie
 
 # ScoreService izoluje Game od Database
 ```

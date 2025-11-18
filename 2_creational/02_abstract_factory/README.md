@@ -1,7 +1,7 @@
 # 🏭 Abstract Factory - Equipment Systems RPG
 
-**Difficulty**: medium \
-**Time**: 15 minutes \
+**Difficulty**: średni  
+**Time**: 15 minutes  
 **Focus**: Abstract Factory pattern + product families
 
 ## 🎯 Zadanie
@@ -38,7 +38,6 @@ Implementuj wzorzec Abstract Factory do tworzenia spójnych zestawów ekwipunku 
 
 ## 2. Abstract Factory
 
-```markdown
 ## 🔄 Wzorzec w akcji
 
 ### ❌ Bez wzorca:

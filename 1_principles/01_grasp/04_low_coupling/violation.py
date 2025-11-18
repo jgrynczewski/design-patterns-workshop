@@ -60,7 +60,7 @@ if __name__ == "__main__":
     # Nie mogę - Game tworzy Database bezpośrednio w finish_game() (ew. patch)
     #
     # ❌ Chcę zmienić Database na inną implementację?
-    # Muszę EDYTOWAĆ Game.finish_game()
+    # Muszę EDYTOWAĆ Game().finish_game()
     #
     # ❌ Chcę dodać cache między Game a Database?
     # Muszę EDYTOWAĆ Game - nie ma miejsca na pośrednika
@@ -90,7 +90,7 @@ Dlaczego to jest ZŁE?
    - Game odpowiada za komunikację z bazą
    - Dwie odpowiedzialności w jednej klasie
 
-5. ❌ Wysokie sprzężenie = niska "współużywalność"
+5. ❌ Silne sprzężenie = niska "współużywalność"
    - Game nie może działać bez Database
    - Nie można użyć Game z innym storage (file, API)
 
@@ -100,3 +100,9 @@ Jak to naprawić?
 3. ScoreService izoluje Game od Database
 4. Game nie zna szczegółów Database - tylko wywołuje score_service.save_score()
 """
+
+
+# Przykład użycia
+if __name__ == "__main__":
+    game = Game()
+    print(game.finish_game("Alice", 150))

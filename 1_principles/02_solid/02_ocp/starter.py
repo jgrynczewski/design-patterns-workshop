@@ -66,3 +66,10 @@ class AreaCalculator:
 
 # OCP: Open for extension, Closed for modification
 # Nowy kształt = nowa klasa Shape, zero zmian w AreaCalculator
+
+
+# Przykład użycia - odkomentuj gdy zaimplementujesz:
+# if __name__ == "__main__":
+#     shapes = [Circle(5), Square(4), Triangle(3, 4)]
+#     calculator = AreaCalculator()
+#     print(f"Total area: {calculator.total_area(shapes)}")

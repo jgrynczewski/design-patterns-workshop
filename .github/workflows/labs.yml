@@ -2,222 +2,290 @@ name: Design Patterns Labs
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, master, develop, solutions ]
   pull_request:
-    branches: [ main, master, develop ]
+    branches: [ main, master, develop, solutions ]
   workflow_dispatch:  # Pozwala na ręczne uruchomienie
 
 jobs:
+  # ============================================
+  # INTRO
+  # ============================================
   lab-01-intro-hello:
-    name: "Lab 01 - Intro: Hello World (10 pts)"
+    name: "Lab 01 - Intro: Hello World"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Lab 01 tests
+      - name: Run tests
         run: |
           cd 0_intro/01_hello
           pytest test_hello.py -v --tb=short
 
+  # ============================================
+  # PRINCIPLES - GRASP
+  # ============================================
   lab-02-grasp-coupling:
-    name: "Lab 02 - GRASP: Low Coupling (10 pts)"
+    name: "Lab 02 - GRASP: Low Coupling"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Lab 02 tests
+      - name: Run tests
         run: |
           cd 1_principles/01_grasp/04_low_coupling
           pytest tests.py -v --tb=short
 
+  # ============================================
+  # PRINCIPLES - SOLID
+  # ============================================
   lab-03-solid-ocp:
-    name: "Lab 03 - SOLID: Open/Closed Principle (10 pts)"
+    name: "Lab 03 - SOLID: Open/Closed Principle"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Lab 03 tests
+      - name: Run tests
         run: |
           cd 1_principles/02_solid/02_ocp
           pytest tests.py -v --tb=short
 
   lab-04-solid-dip:
-    name: "Lab 04 - SOLID: Dependency Inversion (10 pts)"
+    name: "Lab 04 - SOLID: Dependency Inversion"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Lab 04 tests
+      - name: Run tests
         run: |
           cd 1_principles/02_solid/05_dip
           pytest tests.py -v --tb=short
 
+  # ============================================
+  # CREATIONAL PATTERNS
+  # ============================================
   lab-05-factory-method:
-    name: "Lab 05 - Pattern: Factory Method (10 pts)"
+    name: "Lab 05 - Creational: Factory Method"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Lab 05 tests
+      - name: Run tests
         run: |
           cd 2_creational/01_factory_method
-          pytest test_factory.py -v --tb=short
+          pytest tests.py -v --tb=short
 
   lab-06-abstract-factory:
-    name: "Lab 06 - Pattern: Abstract Factory (10 pts)"
+    name: "Lab 06 - Creational: Abstract Factory"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Lab 06 tests
+      - name: Run tests
         run: |
           cd 2_creational/02_abstract_factory
-          pytest test_abstract_factory.py -v --tb=short
+          pytest tests.py -v --tb=short
 
-  lab-07-singleton:
-    name: "Lab 07 - Pattern: Singleton (10 pts)"
+  lab-07-builder:
+    name: "Lab 07 - Creational: Builder"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          cd 2_creational/03_builder
+          pytest tests.py -v --tb=short
 
-      - name: Run Lab 07 tests
+  lab-08-singleton:
+    name: "Lab 08 - Creational: Singleton"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
         run: |
           cd 2_creational/05_singleton
           pytest test_basic.py -v --tb=short
 
-  lab-08-adapter:
-    name: "Lab 08 - Pattern: Adapter (10 pts)"
+  # ============================================
+  # STRUCTURAL PATTERNS
+  # ============================================
+  lab-09-adapter:
+    name: "Lab 09 - Structural: Adapter"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Lab 08 tests
+      - name: Run tests
         run: |
           cd 3_structural/01_adapter
-          pytest test_adapter.py -v --tb=short
+          pytest tests.py -v --tb=short
 
-  lab-09-strategy:
-    name: "Lab 09 - Pattern: Strategy (10 pts)"
+  lab-10-decorator:
+    name: "Lab 10 - Structural: Decorator"
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          cd 3_structural/04_decorator
+          pytest tests.py -v --tb=short
 
-      - name: Run Lab 09 tests
+  lab-11-facade:
+    name: "Lab 11 - Structural: Facade"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          cd 3_structural/05_facade
+          pytest tests.py -v --tb=short
+
+  # ============================================
+  # BEHAVIORAL PATTERNS
+  # ============================================
+  lab-12-strategy:
+    name: "Lab 12 - Behavioral: Strategy"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
         run: |
           cd 4_behavioral/02_strategy
-          pytest test_strategy.py -v --tb=short
+          pytest tests.py -v --tb=short
 
-  # Summary job - pokazuje ogólny status
+  lab-13-template-method:
+    name: "Lab 13 - Behavioral: Template Method"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          cd 4_behavioral/05_template_method
+          pytest tests.py -v --tb=short
+
+  lab-14-flyweight:
+    name: "Lab 14 - Behavioral: Flyweight"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          cd 4_behavioral/06_flyweight
+          pytest tests.py -v --tb=short
+
+  lab-15-iterator:
+    name: "Lab 15 - Behavioral: Iterator"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          cd 4_behavioral/09_iterator
+          pytest tests.py -v --tb=short
+
+  # ============================================
+  # SUMMARY
+  # ============================================
   summary:
-    name: "Summary"
+    name: "📊 Test Summary"
     runs-on: ubuntu-latest
     needs:
       - lab-01-intro-hello
@@ -226,24 +294,73 @@ jobs:
       - lab-04-solid-dip
       - lab-05-factory-method
       - lab-06-abstract-factory
-      - lab-07-singleton
-      - lab-08-adapter
-      - lab-09-strategy
+      - lab-07-builder
+      - lab-08-singleton
+      - lab-09-adapter
+      - lab-10-decorator
+      - lab-11-facade
+      - lab-12-strategy
+      - lab-13-template-method
+      - lab-14-flyweight
+      - lab-15-iterator
     if: always()
 
     steps:
       - name: Check results
         run: |
           echo "============================================"
-          echo "Design Patterns Workshop - Test Summary"
+          echo "🎓 Design Patterns Workshop - Test Summary"
           echo "============================================"
-          echo "Lab 01 - Intro Hello: ${{ needs.lab-01-intro-hello.result }}"
-          echo "Lab 02 - GRASP Low Coupling: ${{ needs.lab-02-grasp-coupling.result }}"
-          echo "Lab 03 - SOLID OCP: ${{ needs.lab-03-solid-ocp.result }}"
-          echo "Lab 04 - SOLID DIP: ${{ needs.lab-04-solid-dip.result }}"
-          echo "Lab 05 - Factory Method: ${{ needs.lab-05-factory-method.result }}"
-          echo "Lab 06 - Abstract Factory: ${{ needs.lab-06-abstract-factory.result }}"
-          echo "Lab 07 - Singleton: ${{ needs.lab-07-singleton.result }}"
-          echo "Lab 08 - Adapter: ${{ needs.lab-08-adapter.result }}"
-          echo "Lab 09 - Strategy: ${{ needs.lab-09-strategy.result }}"
+          echo ""
+          echo "📚 INTRO:"
+          echo "  Lab 01 - Hello World:           ${{ needs.lab-01-intro-hello.result }}"
+          echo ""
+          echo "🎯 PRINCIPLES - GRASP:"
+          echo "  Lab 02 - Low Coupling:          ${{ needs.lab-02-grasp-coupling.result }}"
+          echo ""
+          echo "🎯 PRINCIPLES - SOLID:"
+          echo "  Lab 03 - Open/Closed:           ${{ needs.lab-03-solid-ocp.result }}"
+          echo "  Lab 04 - Dependency Inversion:  ${{ needs.lab-04-solid-dip.result }}"
+          echo ""
+          echo "🏭 CREATIONAL PATTERNS:"
+          echo "  Lab 05 - Factory Method:        ${{ needs.lab-05-factory-method.result }}"
+          echo "  Lab 06 - Abstract Factory:      ${{ needs.lab-06-abstract-factory.result }}"
+          echo "  Lab 07 - Builder:               ${{ needs.lab-07-builder.result }}"
+          echo "  Lab 08 - Singleton:             ${{ needs.lab-08-singleton.result }}"
+          echo ""
+          echo "🏗️  STRUCTURAL PATTERNS:"
+          echo "  Lab 09 - Adapter:               ${{ needs.lab-09-adapter.result }}"
+          echo "  Lab 10 - Decorator:             ${{ needs.lab-10-decorator.result }}"
+          echo "  Lab 11 - Facade:                ${{ needs.lab-11-facade.result }}"
+          echo ""
+          echo "🎭 BEHAVIORAL PATTERNS:"
+          echo "  Lab 12 - Strategy:              ${{ needs.lab-12-strategy.result }}"
+          echo "  Lab 13 - Template Method:       ${{ needs.lab-13-template-method.result }}"
+          echo "  Lab 14 - Flyweight:             ${{ needs.lab-14-flyweight.result }}"
+          echo "  Lab 15 - Iterator:              ${{ needs.lab-15-iterator.result }}"
+          echo ""
           echo "============================================"
+
+      - name: Final status
+        run: |
+          if [[ "${{ needs.lab-01-intro-hello.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-02-grasp-coupling.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-03-solid-ocp.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-04-solid-dip.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-05-factory-method.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-06-abstract-factory.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-07-builder.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-08-singleton.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-09-adapter.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-10-decorator.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-11-facade.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-12-strategy.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-13-template-method.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-14-flyweight.result }}" == "success" ]] && \
+             [[ "${{ needs.lab-15-iterator.result }}" == "success" ]]; then
+            echo "✅ All tests passed! 🎉"
+            exit 0
+          else
+            echo "❌ Some tests failed"
+            exit 1
+          fi

@@ -98,4 +98,18 @@ Dlaczego to jest ZŁE?
 4. ❌ Naruszenie Single Responsibility
    - AreaCalculator musi ZNAĆ wszystkie typy kształtów
    - Zmiana w Circle może wymagać zmiany w AreaCalculator
+
+Jak to naprawić?
+1. Stwórz abstrakcyjną klasę Shape (ABC) z metodą calculate_area()
+2. Każdy kształt (Circle, Square, Triangle) dziedziczy po Shape
+3. Każdy kształt implementuje własną calculate_area()
+4. AreaCalculator używa polimorfizmu - wywołuje shape.calculate_area() bez isinstance()
+5. Nowy kształt = nowa klasa dziedzicząca po Shape, zero zmian w AreaCalculator
 """
+
+
+# Przykład użycia
+if __name__ == "__main__":
+    shapes = [Circle(5), Square(4), Triangle(3, 4)]
+    calculator = AreaCalculator()
+    print(f"Total area: {calculator.total_area(shapes)}")
